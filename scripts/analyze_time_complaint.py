@@ -16,6 +16,8 @@ from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from threading import Lock
 
+PROJECT_ROOT = os.environ.get('PROJECT_ROOT', os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 # 数据库配置
 DB_CONFIG = {
     'host': 'REMOVED_DB_HOST',
@@ -544,5 +546,5 @@ if __name__ == '__main__':
 
     # 生成报告
     if results:
-        output_dir = '/home/REMOVED_DB_USER/customer-service/05_analyze/reports'
+        output_dir = os.path.join(PROJECT_ROOT, '05_analyze/reports')
         generate_html_report(results, output_dir)

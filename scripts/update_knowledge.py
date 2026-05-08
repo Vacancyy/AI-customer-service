@@ -1,7 +1,10 @@
+import os
 """根据客服会议纪要更新知识库：3项修改"""
 import json
 
-QA_PATH = '/home/REMOVED_DB_USER/customer-service/05_analyze/reports/知识库_优化版.json'
+PROJECT_ROOT = os.environ.get('PROJECT_ROOT', os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+QA_PATH = os.path.join(PROJECT_ROOT, '05_analyze/reports/知识库_优化版.json')
 
 with open(QA_PATH, 'r', encoding='utf-8') as f:
     qa_data = json.load(f)

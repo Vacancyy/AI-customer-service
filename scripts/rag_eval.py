@@ -1,14 +1,16 @@
-import os
 """
 RAG评估工具
 用大模型对问答系统的回答进行多维度打分
 评估维度：相关性、准确性、完整性、表达性（各0-10分）
 """
 
+import os
 import json
 import requests
 import time
 import sys
+
+PROJECT_ROOT = os.environ.get('PROJECT_ROOT', os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 API_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
 API_KEY = os.environ.get("DASHSCOPE_API_KEY", "")
@@ -17,7 +19,7 @@ API_KEY = os.environ.get("DASHSCOPE_API_KEY", "")
 QA_MODEL = "qwen3-8b"        # 答题模型
 JUDGE_MODEL = "qwen-max"     # 评分模型（更强的模型，避免自己给自己打分）
 
-QA_JSON_PATH = '/home/REMOVED_DB_USER/customer-service/05_analyze/reports/知识库_优化版.json'
+QA_JSON_PATH = os.path.join(PROJECT_ROOT, '05_analyze/reports/知识库_优化版.json')
 
 
 def call_llm(prompt, max_tokens=500):
@@ -216,5 +218,5 @@ if __name__ == "__main__":
         except:
             pass
 
-    output = '/home/REMOVED_DB_USER/customer-service/05_analyze/reports/rag_eval_report.json'
+    output = os.path.join(PROJECT_ROOT, '05_analyze/reports/rag_eval_report.json')
     run_evaluation(sample_size=size, output_path=output)

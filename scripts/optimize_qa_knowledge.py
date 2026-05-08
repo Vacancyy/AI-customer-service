@@ -15,6 +15,8 @@ import pymysql
 import pandas as pd
 from collections import Counter, defaultdict
 
+PROJECT_ROOT = os.environ.get('PROJECT_ROOT', os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 DB_CONFIG = {
     'host': 'REMOVED_DB_HOST',
     'port': 3308,
@@ -441,7 +443,7 @@ def get_db_connection():
 def load_all_qa():
     """加载所有QA数据"""
     # Excel数据
-    df = pd.read_excel('/home/REMOVED_DB_USER/customer-service/docs/customerQA.xlsx')
+    df = pd.read_excel(os.path.join(PROJECT_ROOT, 'docs/customerQA.xlsx'))
     excel_qa = []
     for _, row in df.iterrows():
         excel_qa.append({
@@ -565,7 +567,7 @@ def generate_optimized_qa():
 
     # 导出文件
     print("\n5. 导出文件...")
-    output_dir = '/home/REMOVED_DB_USER/customer-service/05_analyze/reports'
+    output_dir = os.path.join(PROJECT_ROOT, '05_analyze/reports')
     os.makedirs(output_dir, exist_ok=True)
 
     # JSON

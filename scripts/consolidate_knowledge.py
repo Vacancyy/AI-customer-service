@@ -9,13 +9,16 @@
 - 手动定义合并组，避免误合并
 """
 
+import os
 import json
 import copy
 from datetime import datetime
 
-QA_PATH = '/home/REMOVED_DB_USER/customer-service/05_analyze/reports/知识库_优化版.json'
-BACKUP_PATH = '/home/REMOVED_DB_USER/customer-service/05_analyze/reports/知识库_优化版_整合前备份.json'
-OUTPUT_PATH = '/home/REMOVED_DB_USER/customer-service/05_analyze/reports/知识库_整合版.json'
+PROJECT_ROOT = os.environ.get('PROJECT_ROOT', os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+QA_PATH = os.path.join(PROJECT_ROOT, '05_analyze/reports/知识库_优化版.json')
+BACKUP_PATH = os.path.join(PROJECT_ROOT, '05_analyze/reports/知识库_优化版_整合前备份.json')
+OUTPUT_PATH = os.path.join(PROJECT_ROOT, '05_analyze/reports/知识库_整合版.json')
 
 # ========================================================
 # 第一步：定义真正的重复合并组
@@ -252,7 +255,7 @@ def main():
         'merge_details': merge_log,
         'period_tag_details': tag_log,
     }
-    changelog_path = '/home/REMOVED_DB_USER/customer-service/05_analyze/reports/知识库整合变更日志.json'
+    changelog_path = os.path.join(PROJECT_ROOT, '05_analyze/reports/知识库整合变更日志.json')
     with open(changelog_path, 'w', encoding='utf-8') as f:
         json.dump(changelog, f, ensure_ascii=False, indent=2)
     print("变更日志已保存:", changelog_path)

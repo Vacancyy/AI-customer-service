@@ -22,8 +22,10 @@ API_KEY = os.environ.get("DASHSCOPE_API_KEY", "")
 API_MODEL = "qwen3-8b"
 EMBEDDING_MODEL = "text-embedding-v3"
 
-QA_JSON_PATH = '/home/REMOVED_DB_USER/customer-service/05_analyze/reports/知识库_优化版.json'
-CHROMA_PATH = '/home/REMOVED_DB_USER/customer-service/06_models/chroma_db'
+# 项目根目录：优先用环境变量，否则基于脚本位置推断
+PROJECT_ROOT = os.environ.get("PROJECT_ROOT", os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+QA_JSON_PATH = os.path.join(PROJECT_ROOT, '05_analyze/reports/知识库_优化版.json')
+CHROMA_PATH = os.path.join(PROJECT_ROOT, 'chroma_db')
 
 
 def get_embeddings(texts, batch_size=6):

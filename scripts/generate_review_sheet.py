@@ -2,16 +2,19 @@
 生成客服评审表：从知识库抽样 → RAG生成回答 → 导出Excel让客服评分
 """
 
+import os
+import sys
+
+PROJECT_ROOT = os.environ.get('PROJECT_ROOT', os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.join(PROJECT_ROOT, 'scripts'))
+
 import json
 import random
 import time
-import sys
-
-sys.path.insert(0, '/home/REMOVED_DB_USER/customer-service/scripts')
 from ai_qa_system_v2 import ImprovedQASystem
 
-QA_PATH = '/home/REMOVED_DB_USER/customer-service/05_analyze/reports/知识库_优化版.json'
-OUTPUT_PATH = '/home/REMOVED_DB_USER/customer-service/05_analyze/reports/客服评审表.xlsx'
+QA_PATH = os.path.join(PROJECT_ROOT, '05_analyze/reports/知识库_优化版.json')
+OUTPUT_PATH = os.path.join(PROJECT_ROOT, '05_analyze/reports/客服评审表.xlsx')
 
 def main():
     # 加载知识库用于选题

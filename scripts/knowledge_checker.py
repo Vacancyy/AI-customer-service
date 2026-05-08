@@ -1,4 +1,3 @@
-import os
 """
 知识库自检工具
 用Qwen-Max逐条审查222条QA，挑出可能有问题的条目
@@ -9,17 +8,20 @@ import os
 4. 同一问题是否有多个重复/矛盾的回答
 """
 
+import os
 import json
 import requests
 import time
 import sys
 from collections import defaultdict
 
+PROJECT_ROOT = os.environ.get('PROJECT_ROOT', os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 API_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
 API_KEY = os.environ.get("DASHSCOPE_API_KEY", "")
 JUDGE_MODEL = "qwen-max"
 
-QA_JSON_PATH = '/home/REMOVED_DB_USER/customer-service/05_analyze/reports/知识库_优化版.json'
+QA_JSON_PATH = os.path.join(PROJECT_ROOT, '05_analyze/reports/知识库_优化版.json')
 
 
 def call_llm(prompt, max_tokens=300):
@@ -178,7 +180,7 @@ def run_check(sample_size=None):
         'issues': issues,
         'similar_details': similar,
     }
-    output_path = '/home/REMOVED_DB_USER/customer-service/05_analyze/reports/知识库自检报告.json'
+    output_path = os.path.join(PROJECT_ROOT, '05_analyze/reports/知识库自检报告.json')
     with open(output_path, 'w', encoding='utf-8') as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
     print(f"\n报告已保存: {output_path}")

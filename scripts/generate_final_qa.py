@@ -19,6 +19,8 @@ import pymysql
 import pandas as pd
 from collections import Counter, defaultdict
 
+PROJECT_ROOT = os.environ.get('PROJECT_ROOT', os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 # 数据库配置
 DB_CONFIG = {
     'host': 'REMOVED_DB_HOST',
@@ -192,7 +194,7 @@ def get_db_connection():
 
 def read_excel_qa():
     """读取Excel标准问答"""
-    df = pd.read_excel('/home/REMOVED_DB_USER/customer-service/docs/customerQA.xlsx')
+    df = pd.read_excel(os.path.join(PROJECT_ROOT, 'docs/customerQA.xlsx'))
 
     qa_list = []
     for idx, row in df.iterrows():
@@ -411,7 +413,7 @@ def generate_final_qa():
 
     # 5. 导出JSON
     print("\n5. 导出JSON文件...")
-    output_dir = '/home/REMOVED_DB_USER/customer-service/05_analyze/reports'
+    output_dir = os.path.join(PROJECT_ROOT, '05_analyze/reports')
     os.makedirs(output_dir, exist_ok=True)
 
     json_path = os.path.join(output_dir, '知识库_最终版.json')

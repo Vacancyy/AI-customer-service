@@ -63,7 +63,7 @@ import librosa
 from qwen_asr import Qwen3ASRModel
 
 # ==================== 配置 ====================
-DEFAULT_INPUT = "/home/REMOVED_DB_USER/asr/mp3"
+DEFAULT_INPUT = os.path.join(os.environ.get('PROJECT_ROOT', os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "02_download/audio")
 AUDIO_EXTENSIONS = {".mp3", ".wav", ".flac", ".m4a", ".ogg"}
 ASR_BATCH_SIZE = 10  # 减小批量大小避免内存溢出
 

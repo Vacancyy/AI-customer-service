@@ -47,8 +47,9 @@ try:
     from config import DB_PATH, AUDIO_DIR
 except ImportError:
     # 如果config.py不存在，使用默认路径
-    DB_PATH = "/home/REMOVED_DB_USER/asr/01_source/heli.sqlite3"
-    AUDIO_DIR = "/home/REMOVED_DB_USER/asr/02_download/audio"
+    _ROOT = os.environ.get('PROJECT_ROOT', os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    DB_PATH = os.path.join(_ROOT, "01_source/heli.sqlite3")
+    AUDIO_DIR = os.path.join(_ROOT, "02_download/audio")
 
 # 新旧域名映射
 OLD_DOMAIN = "https://a6alipbxsh16.7x24cc.com/"

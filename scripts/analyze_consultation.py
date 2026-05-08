@@ -28,6 +28,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from threading import Lock
 from collections import Counter, defaultdict
 
+PROJECT_ROOT = os.environ.get('PROJECT_ROOT', os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 # 数据库配置
 DB_CONFIG = {
     'host': 'REMOVED_DB_HOST',
@@ -805,7 +807,7 @@ def main():
         source_name = '全量数据'
 
     # 生成报告
-    output_dir = '/home/REMOVED_DB_USER/customer-service/05_analyze/reports'
+    output_dir = os.path.join(PROJECT_ROOT, '05_analyze/reports')
     os.makedirs(output_dir, exist_ok=True)
     generate_html_report(results, category_results, qa_pairs, output_dir, source_name)
 

@@ -1,11 +1,14 @@
 """找出知识库中相比Excel新增的问答"""
+import os
 import json
 import pandas as pd
 
-with open('/home/REMOVED_DB_USER/customer-service/05_analyze/reports/知识库_优化版.json', 'r', encoding='utf-8') as f:
+PROJECT_ROOT = os.environ.get('PROJECT_ROOT', os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+with open(os.path.join(PROJECT_ROOT, '05_analyze/reports/知识库_优化版.json'), 'r', encoding='utf-8') as f:
     qa_data = json.load(f)
 
-df = pd.read_excel('/home/REMOVED_DB_USER/customer-service/docs/customerQA.xlsx')
+df = pd.read_excel(os.path.join(PROJECT_ROOT, 'docs/customerQA.xlsx'))
 
 def clean_text(t):
     return t.replace('\u201c', '').replace('\u201d', '').replace('"', '').replace('\uff1f', '').replace('?', '').strip()
@@ -28,7 +31,7 @@ for qa in qa_data:
 print(f"增量问答数: {len(incremental)}")
 
 # 保存
-output_path = '/home/REMOVED_DB_USER/customer-service/05_analyze/reports/知识库_增量问答.json'
+output_path = os.path.join(PROJECT_ROOT, '05_analyze/reports/知识库_增量问答.json')
 with open(output_path, 'w', encoding='utf-8') as f:
     json.dump(incremental, f, ensure_ascii=False, indent=2)
 print(f"已保存: {output_path}")

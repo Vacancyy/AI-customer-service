@@ -22,6 +22,8 @@ import pymysql
 import pandas as pd
 from collections import defaultdict
 
+PROJECT_ROOT = os.environ.get('PROJECT_ROOT', os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 # ==================== 配置 ====================
 
 # API配置
@@ -40,7 +42,7 @@ DB_CONFIG = {
 }
 
 # 知识库文件路径
-QA_JSON_PATH = '/home/REMOVED_DB_USER/customer-service/05_analyze/reports/知识库_优化版.json'
+QA_JSON_PATH = os.path.join(PROJECT_ROOT, '05_analyze/reports/知识库_优化版.json')
 
 # ==================== 知识库加载 ====================
 
