@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>咨询类问题与回答分析报告</title>
+    <style>
+        body { font-family: "Microsoft YaHei", sans-serif; background: #f5f6fa; padding: 20px; }
+        .container { max-width: 1400px; margin: auto; }
+        .header { background: linear-gradient(135deg, #3498DB, #2980B9); color: white; padding: 30px; border-radius: 10px; text-align: center; margin-bottom: 20px; }
+        .section { background: white; padding: 20px; border-radius: 10px; margin: 20px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .section h2 { color: #3498DB; border-bottom: 2px solid #3498DB; padding-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
+        th { background: #3498DB; color: white; }
+        tr:hover { background: #f8f9fa; }
+        .question-box { background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #3498DB; }
+        .answer-box { background: #f1f8e9; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #27AE60; }
+        .qa-item { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .qa-question { font-weight: bold; color: #2C3E50; margin-bottom: 10px; }
+        .qa-answer { color: #27AE60; padding: 10px; background: #f8f9fa; border-radius: 5px; }
+        .tag { padding: 4px 8px; border-radius: 4px; font-size: 12px; display: inline-block; margin: 2px; }
+        .tag-blue { background: #3498DB; color: white; }
+        .tag-green { background: #27AE60; color: white; }
+        .tag-orange { background: #F39C12; color: white; }
+        .tag-red { background: #E74C3C; color: white; }
+        .stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center; }
+        .stat-card .number { font-size: 28px; font-weight: bold; color: #3498DB; }
+        .stat-card .label { color: #666; margin-top: 5px; }
+        .stat-card.warning .number { color: #E74C3C; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>咨询类问题与回答分析报告</h1>
+            <p>数据来源: 在线对话 | 分析数量: 25348 条对话 | 问答知识: 21418 条</p>
+        </div>
+
+        <div class="section">
+            <h2>一、分析概览</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="number">25348</div>
+                    <div class="label">分析对话数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">100</div>
+                    <div class="label">问题类型数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">25348</div>
+                    <div class="label">有有效回答</div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="number">0</div>
+                    <div class="label">无有效回答</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">16458</div>
+                    <div class="label">标准回答模板</div>
+                </div>
+            </div>
+            <p style="color:#666;">说明："无有效回答"指客服回复仅为问候语/自动回复，无实质内容。这些对话仍可分析问题类型。</p>
+        </div>
+
+        <div class="section">
+            <h2>二、高频问题大类 TOP10</h2>
+            <table>
+                <tr><th>排名</th><th>问题大类</th><th>出现次数</th><th>占比</th></tr>
+                <tr><td>1</td><td><span class='tag tag-blue'>理赔流程类</span></td><td>11447</td><td>45.2%</td></tr><tr><td>2</td><td><span class='tag tag-blue'>保障范围类</span></td><td>5692</td><td>22.5%</td></tr><tr><td>3</td><td><span class='tag tag-blue'>产品信息类</span></td><td>4709</td><td>18.6%</td></tr><tr><td>4</td><td><span class='tag tag-blue'>理赔材料类</span></td><td>1688</td><td>6.7%</td></tr><tr><td>5</td><td><span class='tag tag-blue'>理赔条件</span></td><td>1370</td><td>5.4%</td></tr><tr><td>6</td><td><span class='tag tag-blue'>退保流程类</span></td><td>284</td><td>1.1%</td></tr><tr><td>7</td><td><span class='tag tag-blue'>费率价格类</span></td><td>72</td><td>0.3%</td></tr><tr><td>8</td><td><span class='tag tag-blue'>理赔渠道</span></td><td>69</td><td>0.3%</td></tr><tr><td>9</td><td><span class='tag tag-blue'>未知</span></td><td>4</td><td>0.0%</td></tr><tr><td>10</td><td><span class='tag tag-blue'>理赔时效</span></td><td>4</td><td>0.0%</td></tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>三、高频具体问题类型 TOP30</h2>
+            <table>
+                <tr><th>排名</th><th>问题类型</th><th>出现次数</th><th>占比</th><th>代表性回答</th></tr>
+                <tr><td>1</td><td>理赔条件</td><td>6607</td><td>26.1%</td><td>宁惠保理赔范围包括住院、门特和门诊大病费用，医保结算后剩余费用达免赔额可申请理赔。升级版含门诊日间手术费用，需符合20种...</td></tr><tr><td>2</td><td>保障内容</td><td>4265</td><td>16.8%</td><td>宁惠保理赔范围包括住院、门特和门诊大病费用，医保结算后剩余费用达免赔额可申请理赔。升级版含门诊日间手术费用，需符合20种...</td></tr><tr><td>3</td><td>理赔步骤</td><td>2685</td><td>10.6%</td><td>宁惠保理赔范围包括住院、门特和门诊大病费用，医保结算后剩余费用达免赔额可申请理赔。升级版含门诊日间手术费用，需符合20种...</td></tr><tr><td>4</td><td>投保条件</td><td>1927</td><td>7.6%</td><td>家庭成员共享免赔额需提供家庭关系证明材料。</td></tr><tr><td>5</td><td>理赔渠道</td><td>1703</td><td>6.7%</td><td>理赔方式需通过官方渠道咨询，具体方式未明确说明</td></tr><tr><td>6</td><td>产品介绍</td><td>1703</td><td>6.7%</td><td>南京宁惠保保障范围包括双通道门诊用药、医保外费用免赔额降低、海内外特药数量增加、家庭参保共享免赔额、医保个账可为近亲属购...</td></tr><tr><td>7</td><td>所需材料</td><td>1255</td><td>5.0%</td><td>特药理赔需要上传哪些材料</td></tr><tr><td>8</td><td>除外责任</td><td>1102</td><td>4.3%</td><td>宁惠保理赔范围包括住院、门特和门诊大病费用，普通门诊和门诊急诊不在保障范围内。</td></tr><tr><td>9</td><td>理赔时效</td><td>1000</td><td>3.9%</td><td>审核时间：3-7个工作日立案，30个工作日内结案。结案后会有短信通知。</td></tr><tr><td>10</td><td>什么情况可以理赔</td><td>650</td><td>2.6%</td><td>宁惠保理赔范围包括住院、门特和门诊大病费用，医保结算后剩余费用达免赔额可申请理赔。升级版含门诊日间手术费用保障，需符合2...</td></tr><tr><td>11</td><td>既往症保障</td><td>476</td><td>1.9%</td><td>本产品保障因疾病或意外导致的住院、门特、门诊大病费用，经医保报销后，达到免赔额后超出部分可赔付，住院不限病种和次数，免赔...</td></tr><tr><td>12</td><td>材料要求</td><td>357</td><td>1.4%</td><td>住院材料需上传完整清晰的住院发票、出院小结、费用明细清单，门诊大病/门特需上传相关发票和认定书，同一病种只需一次就诊病历...</td></tr><tr><td>13</td><td>保单查询</td><td>264</td><td>1.0%</td><td>理赔申请的渠道有哪些</td></tr><tr><td>14</td><td>保障范围</td><td>224</td><td>0.9%</td><td>理赔申请的渠道有哪些</td></tr><tr><td>15</td><td>续保规则</td><td>178</td><td>0.7%</td><td>若收到团个重复短信，可在微信公众号南京宁惠保个人中心团个重复里登记</td></tr><tr><td>16</td><td>退保流程</td><td>162</td><td>0.6%</td><td>当前客服全忙，请稍候。</td></tr><tr><td>17</td><td>退保条件</td><td>108</td><td>0.4%</td><td>当前客服全忙，请稍候。</td></tr><tr><td>18</td><td>理赔材料类</td><td>98</td><td>0.4%</td><td>传统理赔需要提交的材料未在客服回答中提及。</td></tr><tr><td>19</td><td>材料提交</td><td>77</td><td>0.3%</td><td>提供两次理赔的发票信息文件，分别为理赔编号977145417521168384和982761615541665792的发...</td></tr><tr><td>20</td><td>保费查询</td><td>77</td><td>0.3%</td><td>南京宁惠保保费及理赔门槛未提及</td></tr><tr><td>21</td><td>保障期限</td><td>73</td><td>0.3%</td><td>26年的保单是2026年1月1号生效，保障期为2026年1月1号到2026年12月31号</td></tr><tr><td>22</td><td>在哪里申请理赔</td><td>64</td><td>0.3%</td><td>南京宁惠保线下理赔地址：南京市秦淮区长白街346号，人保财险城南分公司宁惠保5号窗口。工作时间：上午8点半到11点半，下...</td></tr><tr><td>23</td><td>免赔额</td><td>57</td><td>0.2%</td><td>2026年的免赔额信息未在客服回答中提及</td></tr><tr><td>24</td><td>保障内容：问产品保障什么疾病/意外</td><td>27</td><td>0.1%</td><td>保障范围包括因疾病或意外导致的住院、门特门诊大病费用，经医保报销后达到免赔额可赔付，住院不限病种和就诊次数，免赔额当年累...</td></tr><tr><td>25</td><td>家庭参保共享免赔额</td><td>25</td><td>0.1%</td><td>家庭成员共享免赔额需提供家庭关系证明材料</td></tr><tr><td>26</td><td>理赔材料</td><td>14</td><td>0.1%</td><td>理赔住院费用需上传红色星号标记的必选项，身故情况需上传理赔委托书，其他情况无需上传委托书。</td></tr><tr><td>27</td><td>医保个账购买</td><td>12</td><td>0.0%</td><td>医保个账可为近亲属购买，无最低金额限制，支持家庭成员参保。</td></tr><tr><td>28</td><td>理赔次数</td><td>12</td><td>0.0%</td><td>理赔次数不限，可分次或集中申请，系统会自动累计金额。</td></tr><tr><td>29</td><td>保障范围类</td><td>9</td><td>0.0%</td><td>客服未提供关于曲氟尿苷替匹嘧啶片的具体信息或回答</td></tr><tr><td>30</td><td>参保时间</td><td>7</td><td>0.0%</td><td>现在不在参保期，每年的9.19-12.31日是下一个年度的参保期。</td></tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>四、各二级分类问题统计</h2>
+            <table>
+                <tr><th>二级分类</th><th>对话数</th><th>高频问题类型</th></tr>
+                <tr><td>保障范围了解</td><td>11962</td><td>理赔条件, 保障内容, 除外责任</td></tr><tr><td>产品了解</td><td>4882</td><td>产品介绍, 投保条件, 保障内容</td></tr><tr><td>理赔流程了解</td><td>3732</td><td>理赔步骤, 理赔渠道, 理赔时效</td></tr><tr><td>理赔材料了解</td><td>2776</td><td>所需材料, 理赔渠道, 理赔步骤</td></tr><tr><td>条款解释</td><td>1642</td><td>理赔条件, 保障内容, 投保条件</td></tr><tr><td>退保流程了解</td><td>224</td><td>退保流程, 退保条件, 退保金额</td></tr><tr><td>费率查询</td><td>130</td><td>保费查询, 投保条件, 产品介绍</td></tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>五、问答知识库（AI客服可直接使用）</h2>
+            <p>以下问答已标准化处理，可直接用于AI客服系统回复客户：</p>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 哪些靶向药在医保范围内</div>
+                <div class="qa-answer">答: 特药理赔需要上传的材料包括住院发票、出院记录、住院费用明细清单、异地就医医保结算单、身份证、银行卡、医保卡等。</div>
+                <span class="tag tag-green">理赔材料了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: Dfmo药品是否可以报销</div>
+                <div class="qa-answer">答: 宁惠保理赔范围包括住院和门特、门诊大病类型的门诊费用，经医保结算后剩余费用达到免赔额的可申请理赔。药品是否能报销需查看是否在住院费用明细清单内，且不包含主要起营养滋补作用以及美容、减肥等保健功能药品。具体以医院开具的材料为准。</div>
+                <span class="tag tag-green">保障范围了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 为什么我的理赔申请被驳回？需要提供哪些材料？</div>
+                <div class="qa-answer">答: 您的理赔申请被驳回是因为需要补充医保结算单。由于异地就医，各地医保政策不同，需提供由参保地医保中心出具的医保结算单以确保金额准确。如无法提供，可写纸条注明“接受差额，同意按现有材料理算”，并签字确认。</div>
+                <span class="tag tag-green">理赔材料了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 我购买的保险保障范围是什么？</div>
+                <div class="qa-answer">答: 宁惠保理赔范围包括住院和门特、门诊大病类型的门诊费用，经医保结算后，剩余费用达到免赔额的可以申请理赔。普通门诊和门诊急诊不在保障范围内。投保升级版的，新增门诊日间手术费用责任保障，需符合日间手术病种（20种）并享受日间手术医保待遇。</div>
+                <span class="tag tag-green">产品了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 胆囊结石手术费用是否可以申请赔付</div>
+                <div class="qa-answer">答: 住院费用经过医保结算后可以申请理赔，个人自付超过1.5万（升级版免赔额1.45万）之后的费用有赔付，未达到免赔额则无法赔付。</div>
+                <span class="tag tag-green">保障范围了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 淮安农保报销流程及申请方式是什么？</div>
+                <div class="qa-answer">答: 淮安农保报销需通过传统理赔方式提交资料，包括住院发票、出院记录、住院费用明细清单、异地就医医保结算单、身份证、银行卡、医保卡等。具体操作可通过南京宁惠保微信服务号或我的南京app进行理赔申请。</div>
+                <span class="tag tag-green">理赔流程了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 住院费用是否可以申请理赔？</div>
+                <div class="qa-answer">答: 宁惠保理赔范围包括住院和门特、门诊大病类型的门诊费用，经医保结算后，剩余费用达到免赔额的可以申请理赔。普通门诊和门诊急诊不在保障范围内。若投保升级版，新增门诊日间手术费用责任保障，需符合日间手术病种（20种）并享受日间手术医保待遇。</div>
+                <span class="tag tag-green">保障范围了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 南京宁惠保的保障范围包括哪些内容？</div>
+                <div class="qa-answer">答: 南京宁惠保的理赔范围包括住院和门特、门诊大病类型的门诊费用，经医保结算后，剩余费用达到免赔额的可以申请理赔。普通门诊和门诊急诊不在保障范围内。若投保升级版，新增门诊日间手术费用责任保障，需符合日间手术病种（20种）并享受日间手术医保待遇。</div>
+                <span class="tag tag-green">保障范围了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 马来酸阿伐曲泊帕是否可以理赔？</div>
+                <div class="qa-answer">答: 如果药品费用发票上的医保类型是门特，并且该药品属于门特用药目录，且费用产生于医院，则可能在保障范围内。若是在外购药房购买，不在保障范围内。具体需根据药品费用产生的渠道及医保类型判断。</div>
+                <span class="tag tag-green">保障范围了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 保单被退回，询问具体不符合保障责任的原因</div>
+                <div class="qa-answer">答: 本次就诊属于既往症，根据疾病住院津贴补充保险产品条款及特别约定，此次理赔申请内容不在该产品保障责任范围内。</div>
+                <span class="tag tag-green">保障范围了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 理赔案件结案后是否需要申请直赔登记？</div>
+                <div class="qa-answer">答: 理赔案件结案后需要进行直赔登记，但若被保人医保为南京，可选择不进行直赔登记，三四个月申请一次快速理赔。</div>
+                <span class="tag tag-green">理赔流程了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 被保险人已身故，理赔委托书如何填写？</div>
+                <div class="qa-answer">答: 应选择一位直系亲属作为申请人申请理赔，该申请人需手持身份证和银行卡进行人证合照。被保险人的其他直系亲属（如配偶、子女）可作为委托人，委托该申请人进行理赔申请，此时申请人是受托人，委托人需在委托书中明确授权。</div>
+                <span class="tag tag-green">理赔材料了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 双通道药是否属于特药理赔范围？</div>
+                <div class="qa-answer">答: 双通道药不属于特药理赔范围，属于责任一理赔范围。2025年双通道药品仅保障住院期间同时使用的药品，2026年升级版不限制使用时间。</div>
+                <span class="tag tag-green">保障范围了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 家庭共享保险的条件是什么</div>
+                <div class="qa-answer">答: 家庭共享保险需要满足以下条件：1. 同一个投保人；2. 投保人和被保人必须是直系亲属关系（父母、配偶及子女）；3. 至少3人及以上购买宁惠保五期保单。符合上述条件的家庭成员可以年度内共享免赔额，最多不超过7人。</div>
+                <span class="tag tag-green">保障范围了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 肠息肉切除手术是否可以申请理赔？</div>
+                <div class="qa-answer">答: 住院经过医保结算可以申请理赔，达到免赔额后按照比例赔付。基础版免赔额为个人自付1.5万元、个人自费2.0万元；升级版免赔额为个人自付1.45万元、个人自费1.95万元。</div>
+                <span class="tag tag-green">保障范围了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 门诊手术是否在报销范围内</div>
+                <div class="qa-answer">答: 门诊手术是否在报销范围内，需根据具体保险类型判断。若投保的是升级版，新增门诊日间手术费用责任保障，且符合日间手术病种（20种）并享受了日间手术医保待遇，则可报销。普通门诊和门诊急诊不在保障范围内。</div>
+                <span class="tag tag-green">保障范围了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 未勾选某些项目是否会影响理赔？</div>
+                <div class="qa-answer">答: 未勾选某些项目不会影响理赔。</div>
+                <span class="tag tag-green">理赔流程了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 宁惠保线下理赔窗口的具体地址是什么？</div>
+                <div class="qa-answer">答: 南京宁惠保线下理赔地址为南京市秦淮区长白街346号，人保财险城南分公司宁惠保5号窗口。工作时间：工作日上午8点半到11点半，下午1点半到5点半，周末及法定节假日休息。</div>
+                <span class="tag tag-green">理赔材料了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 传统理赔需要多久立案？</div>
+                <div class="qa-answer">答: 传统理赔一般需要3-7个工作日立案，最晚30个工作日内结案。结案后会有短信通知，具体以短信内容为准。</div>
+                <span class="tag tag-green">理赔流程了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 特药理赔报销比例从去年的75%降到了70%，是什么原因？</div>
+                <div class="qa-answer">答: 去年您申请过理赔，说明您出现了理赔情况，因此今年不再享受续保优惠。连续两年及以上购买‘南京宁惠保’且未出险的，责任二、三及责任四赔付比例可提升5%。</div>
+                <span class="tag tag-green">条款解释</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 如何办理南京宁惠保的理赔手续？</div>
+                <div class="qa-answer">答: 办理南京宁惠保理赔需在南京市医保定点医疗机构就诊，出院后通过宁惠保微信服务号或我的南京APP申请。选择为家人申请，上传身份证明和银行信息即可完成理赔。</div>
+                <span class="tag tag-green">理赔流程了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 如何查询南京宁惠保境内外特定药械治疗目录？</div>
+                <div class="qa-answer">答: 您可以通过关注南京宁惠保微信服务号，在右下角的保障详情中查看最上方的六期特药目录。</div>
+                <span class="tag tag-green">产品了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 被保人使用农村医保在老家就医，住院手术费用是否可以报销？</div>
+                <div class="qa-answer">答: 被保人使用农村医保在老家就医，住院手术费用可以通过南京宁惠保申请理赔。需提供住院发票、出院记录、住院费用明细清单、身份证、银行卡、医保卡等材料，通过南京APP或微信公众号提交理赔申请。住院经过医保结算后，达到对应免赔额后按比例赔付。</div>
+                <span class="tag tag-green">保障范围了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 特药理赔时没有医院选项如何处理？</div>
+                <div class="qa-answer">答: 特药理赔是针对通过定点药房购买的特药清单内药品进行的，需符合适应症和疾病要求。若药品未在医院购买，则无法申请特药理赔，只能走正常理赔流程，并需达到免赔额。</div>
+                <span class="tag tag-green">保障范围了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 在非直赔医院就诊是否会影响理赔</div>
+                <div class="qa-answer">答: 在非直赔医院就诊不会影响理赔，住院费用经过医保结算后可以申请理赔，超过免赔额后会有赔付。</div>
+                <span class="tag tag-green">保障范围了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 老年人进行关节置换手术是否可以申请理赔</div>
+                <div class="qa-answer">答: 老年人进行关节置换手术的费用，若已通过医保报销，个人自付部分超过1.5万元（升级版免赔额为1.45万元）或个人自费部分扣除无效费用后超过2万元（升级版免赔额为1.95万元），可申请理赔。具体申请流程为：出院结算后，通过宁慧保公众号或我的南京APP，在理赔专区提交身份证明和银行信息即可申请。</div>
+                <span class="tag tag-green">保障范围了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 骨折受伤自费做手术能否报销</div>
+                <div class="qa-answer">答: 南京宁惠保是补充基本医保的商业险，费用没有经过医保结算的不在保障范围内，因此无法报销。</div>
+                <span class="tag tag-green">保障范围了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 医保范围内费用和医保范围外的费用如何区分？</div>
+                <div class="qa-answer">答: 医保范围内费用是指医保统筹报销范围内的药品、诊疗、医疗服务设施等，经医保报销后需个人支付剩余部分（即个人自付）。医保范围外费用是指医保统筹报销范围外的药品、诊疗、医疗服务设施等，需个人全额支付（即个人自费）。</div>
+                <span class="tag tag-green">保障范围了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 传统理赔提交后需要多久立案？</div>
+                <div class="qa-answer">答: 传统理赔一般在3-7个工作日内立案，最晚30个工作日内结案。结案后会有短信通知，具体以短信内容为准。</div>
+                <span class="tag tag-green">理赔流程了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 如何证明与父亲的关系以用于医保相关业务？</div>
+                <div class="qa-answer">答: 若户口在同一户口本上，可使用户口本作为关系证明；若不在同一户口本上，可前往户口在一起时的户口所在地派出所开具《常住人口登记表》。若无法开具，也可前往村委会或社区开具盖公章的证明。</div>
+                <span class="tag tag-green">理赔材料了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 理赔未通过的原因是什么？</div>
+                <div class="qa-answer">答: 理赔未通过的原因包括：1、25年入院，请去五期申请理赔；2、请补充本次住院对应的清单抬头为《南京市基本医疗保险-住院医疗费用明细清单》所有页码，不可缺页。</div>
+                <span class="tag tag-green">理赔材料了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 急诊治疗肾结石的费用是否可以报销？</div>
+                <div class="qa-answer">答: 急诊治疗肾结石的费用不在保障范围内。宁惠保理赔范围包括住院和门特、门诊大病类型的门诊费用，经医保结算后剩余费用达到免赔额的可申请理赔。普通门诊和门诊急诊不在保障范围内。若投保升级版，新增门诊日间手术费用责任保障，需符合日间手术病种（20种）并享受日间手术医保待遇。</div>
+                <span class="tag tag-green">保障范围了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 住院报销后显示未达免赔额是什么意思</div>
+                <div class="qa-answer">答: 未达免赔额是指您个人自付的费用未达到医保规定的免赔额标准，因此无法获得赔付。具体而言，住院、门特及门诊大病费用在医保报销后，个人自付部分需超过1.5万元（升级版为1.45万元）才能开始赔付，个人自费部分需超过2万元（升级版为1.95万元）才能开始赔付，且免赔额是分开计算的，年度累计达到其中一项即可获得赔付。</div>
+                <span class="tag tag-green">条款解释</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 门诊费用可以申请理赔吗？</div>
+                <div class="qa-answer">答: 门诊费用是否可以申请理赔，需根据具体类型判断。普通门诊和门诊急诊不在保障范围内；仅住院、门特及门诊大病类型的门诊费用，在经医保结算后，剩余费用达到免赔额的可申请理赔。若投保升级版，门诊日间手术费用在符合20种日间手术病种且享受日间手术医保待遇的情况下也可理赔。</div>
+                <span class="tag tag-green">保障范围了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 南京宁惠保线下理赔地址在哪里？</div>
+                <div class="qa-answer">答: 南京宁惠保线下理赔地址为南京市秦淮区长白街346号，人保财险城南分公司宁惠保5号窗口。工作时间：工作日上午8点半到11点半，下午1点半到5点半，周末及法定节假日休息。</div>
+                <span class="tag tag-green">理赔材料了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 儿童医院看病费用是否可以报销</div>
+                <div class="qa-answer">答: 住院费用经过医保结算后可以申请理赔，个人自付超过1.5万元（升级版免赔额1.45万元）之后的费用有赔付；个人自费扣除无效费用后超过2万元（升级版1.95万元）之后的费用有赔付，免赔额是分开计算的，年度累计达到其中一项即可。</div>
+                <span class="tag tag-green">保障范围了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 儿童质子治疗住院费用是否可以通过医保报销？</div>
+                <div class="qa-answer">答: 住院费用经过医保结算后可以申请理赔，按照产生的费用划分责任一二三，按照不同责任进行理赔计算。</div>
+                <span class="tag tag-green">保障范围了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 参保报销的流程是什么？</div>
+                <div class="qa-answer">答: 参保报销流程如下：1. 通过『我的南京』APP，进入『我的』-『南京宁惠保』；2. 或关注『南京宁惠保』微信服务号，在『理赔专区』-『理赔申请』-『南京宁惠保医疗及附加险理赔』-『我要理赔』-『新增理赔』，选择为自己或他人，输入被保险人就诊信息。若为南京医保且南京就医，可直接勾选就诊记录，无需上传材料；若无就诊记录，则需上传住院发票、出院记录、住院费用明细清单、异地就医医保结算单、身份证、银行卡、医保卡等至指定位置。</div>
+                <span class="tag tag-green">理赔流程了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 如何为他人申请理赔？</div>
+                <div class="qa-answer">答: 理赔流程如下：1.通过『我的南京』APP，进入『我的』-『南京宁惠保』；2.通过南京宁惠保微信服务号，进入『理赔专区』-『理赔申请』-『南京宁惠保医疗及附加险理赔』-『我要理赔』-『新增理赔』，根据情况选择为自己或他人，输入被保险人就诊信息。①若为南京医保且南京就医，可直接勾选就诊记录，无需上传医疗材料；②若无就诊记录，需上传住院发票、出院记录、住院费用明细清单、异地就医医保结算单、身份证、银行卡、医保卡等至指定位置。</div>
+                <span class="tag tag-green">理赔流程了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 宁惠保理赔中心地址在哪里</div>
+                <div class="qa-answer">答: 南京宁惠保线下理赔地址：南京市秦淮区长白街346号，人保财险城南分公司宁惠保5号窗口。工作人员将协助您在自己手机上操作，请您携带好理赔材料。工作时间：工作日上午8点半到11点半，下午1点半到5点半，周末及法定节假日休息。</div>
+                <span class="tag tag-green">理赔流程了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 种牙费用是否可以报销</div>
+                <div class="qa-answer">答: 种牙费用不在保障范围内。宁惠保理赔范围包括住院和门特、门诊大病类型的门诊费用，经医保结算后剩余费用达到免赔额的可申请理赔。普通门诊和门诊急诊不在保障范围内。若投保升级版，新增门诊日间手术费用责任保障，需符合日间手术病种（20种）并享受日间手术医保待遇。</div>
+                <span class="tag tag-green">保障范围了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 子女在南京工作，父母在南通参加合作医疗保险（农保），在上海龙华医院住院，报销流程和所需材料是什么？</div>
+                <div class="qa-answer">答: 首先使用医保办理出院，出院后申请理赔。理赔流程为：1.通过我的南京app-我的-南京宁惠保，或南京宁惠保微信服务号进入理赔专区，选择医疗及附加险理赔并提交申请。2.若为南京医保且在南京就医，可直接勾选就诊记录，无需上传医疗材料；若无就诊记录或异地就医，需上传住院发票、出院记录、住院费用明细清单、异地就医结算单、身份证、银行卡、医保卡等材料。确保所有材料清晰完整。</div>
+                <span class="tag tag-green">理赔流程了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 如何申请报销？</div>
+                <div class="qa-answer">答: 申请报销可通过以下两种方式：1. 使用『我的南京』APP，路径为『我的』-『南京宁惠保』；2. 通过『南京宁惠保』微信服务号，进入『理赔专区』-『理赔申请』-『南京宁惠保医疗及附加险理赔』-『我要理赔』-『新增理赔』。根据情况选择为自己或他人，输入被保险人就诊信息。若为南京医保且南京就医，可直接勾选就诊记录，无需上传材料；若无就诊记录，则需上传住院发票、出院记录、住院费用明细清单、异地就医医保结算单、身份证、银行卡、医保卡等至指定位置。</div>
+                <span class="tag tag-green">理赔流程了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 甲状腺癌是否在理赔范围内</div>
+                <div class="qa-answer">答: 甲状腺癌在理赔范围内，住院费用经过医保结算后可以申请理赔，超过免赔额部分将予以赔付</div>
+                <span class="tag tag-green">保障范围了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 外地户口且没有基础医保是否可以参加宁惠保？</div>
+                <div class="qa-answer">答: 没有基础医保不能购买宁惠保。</div>
+                <span class="tag tag-green">退保流程了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 南京宁惠保线下理赔地点在哪里</div>
+                <div class="qa-answer">答: 南京宁惠保线下理赔地址为南京市秦淮区长白街346号，人保财险城南分公司宁惠保5号窗口。工作人员将协助您在自己手机上操作，请您携带好理赔材料。工作时间：工作日上午8点半到11点半，下午1点半到5点半，周末及法定节假日休息。</div>
+                <span class="tag tag-green">理赔材料了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 住院费用达到多少金额可以申请理赔？</div>
+                <div class="qa-answer">答: 根据您购买的150元保单，住院费用需达到免赔额才能申请理赔。具体免赔额为：医保范围内个人自付部分免赔额1.45万元，医保范围外个人自费部分免赔额1.95万元。若未达到免赔额，则无法申请理赔。</div>
+                <span class="tag tag-green">保障范围了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 如何办理理赔申请？</div>
+                <div class="qa-answer">答: 理赔流程如下：1.通过『我的南京』APP，进入『我的』-『南京宁惠保』；2.通过南京宁惠保微信服务号，进入『理赔专区』-『理赔申请』-『南京宁惠保医疗及附加险理赔』-『我要理赔』-『新增理赔』，根据情况选择为自己或他人，输入被保险人就诊信息。①如为南京医保且南京就医，直接勾选就诊记录，无需上传医疗材料；②如无就诊记录，需上传住院发票、出院记录、住院费用明细清单、异地就医医保结算单、身份证、银行卡、医保卡等至指定位置。</div>
+                <span class="tag tag-green">理赔流程了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 南京宁惠保线下理赔点地址在哪里</div>
+                <div class="qa-answer">答: 南京宁惠保线下理赔地址为南京市秦淮区长白街346号，人保财险城南分公司宁惠保5号窗口。工作时间：工作日上午8点半到11点半，下午1点半到5点半，周末及法定节假日休息。请携带好理赔材料，工作人员将协助您在手机上操作。</div>
+                <span class="tag tag-green">理赔材料了解</span>
+            </div>
+            
+            <div class="qa-item">
+                <div class="qa-question">问: 自费购买的药品是否可以申请理赔？</div>
+                <div class="qa-answer">答: 自费购买的药品是否可以申请理赔，需确认该药品是否在特药目录内。若药品在特药目录内且在指定药房购买，可申请理赔；若不在特药目录内，则无法报销。</div>
+                <span class="tag tag-green">保障范围了解</span>
+            </div>
+            <p>... 共 21418 条问答知识，仅展示前50条</p>
+        </div>
+
+        <div class="section">
+            <h2>六、高频问题类型详细回答</h2>
+            <p>针对高频问题类型，展示多个客服回答供参考：</p>
+            
+            <div class="question-box">
+                <strong>问题类型: 理赔条件</strong> <span class="tag tag-orange">6607次</span>
+            </div>
+            <div class="answer-box">回答1: 宁惠保理赔范围包括住院、门特和门诊大病费用，医保结算后剩余费用达免赔额可申请理赔。升级版含门诊日间手术费用，需符合20种病种并享受医保待遇。</div><div class="answer-box">回答2: 医保报销后个人自付超1.5万可赔付，个人自费超2万可赔付，免赔额分开计算。</div><div class="answer-box">回答3: 宁惠保理赔范围包括住院、门特和门诊大病费用，医保结算后剩余费用达免赔额可申请理赔。升级版含门诊日间手术费用保障，需符合20种日间手术病种并享受医保待遇。</div>
+            
+            <div class="question-box">
+                <strong>问题类型: 保障内容</strong> <span class="tag tag-orange">4265次</span>
+            </div>
+            <div class="answer-box">回答1: 宁惠保理赔范围包括住院、门特和门诊大病费用，医保结算后剩余费用达免赔额可申请理赔。升级版含门诊日间手术费用，需符合20种病种并享受医保待遇。</div><div class="answer-box">回答2: 南京宁惠保保障范围包括双通道门诊用药、医保外费用免赔额降低、海内外特药数量增加、家庭参保共享免赔额、医保个账可为近亲属购买、断保用户续保优待。</div><div class="answer-box">回答3: 南京宁惠保六期支持门诊费用理赔，可报销医保外费用，且有双通道门诊用药、家庭共享免赔额等保障内容。</div>
+            
+            <div class="question-box">
+                <strong>问题类型: 理赔步骤</strong> <span class="tag tag-orange">2685次</span>
+            </div>
+            <div class="answer-box">回答1: 宁惠保理赔范围包括住院、门特和门诊大病费用，医保结算后剩余费用达免赔额可申请理赔。升级版含门诊日间手术费用，需符合20种病种并享受医保待遇。</div><div class="answer-box">回答2: 理赔申请的渠道有哪些</div><div class="answer-box">回答3: 直赔登记需在出院前3个工作日完成，审核通过后在签约医院就诊，符合条件可直接赔付，仅限南京医保参保人员在南京就医。</div>
+            
+            <div class="question-box">
+                <strong>问题类型: 投保条件</strong> <span class="tag tag-orange">1927次</span>
+            </div>
+            <div class="answer-box">回答1: 家庭成员共享免赔额需提供家庭关系证明材料。</div><div class="answer-box">回答2: 五期参保群体包括南京市城镇职工和居民医保参保人、直系亲属、外市来宁务工人员及其家属、公费医疗人员。</div><div class="answer-box">回答3: 省外医保人员参保需提供保单生效前在南京居住或工作证明，如居住证、租房合同等</div>
+            
+            <div class="question-box">
+                <strong>问题类型: 理赔渠道</strong> <span class="tag tag-orange">1703次</span>
+            </div>
+            <div class="answer-box">回答1: 理赔方式需通过官方渠道咨询，具体方式未明确说明</div><div class="answer-box">回答2: 理赔申请的渠道有哪些</div><div class="answer-box">回答3: 南京宁惠保线下理赔地址：南京市秦淮区长白街346号，人保财险城南分公司宁惠保5号窗口。工作时间：上午8点半到11点半，下午1点半到5点半，周末及法定节假日休息。</div>
+            
+            <div class="question-box">
+                <strong>问题类型: 产品介绍</strong> <span class="tag tag-orange">1703次</span>
+            </div>
+            <div class="answer-box">回答1: 南京宁惠保保障范围包括双通道门诊用药、医保外费用免赔额降低、海内外特药数量增加、家庭参保共享免赔额、医保个账可为近亲属购买、断保用户续保优待。</div><div class="answer-box">回答2: 当前客服全忙，请稍候。</div><div class="answer-box">回答3: 当前客服忙，请您点击继续排队</div>
+            
+            <div class="question-box">
+                <strong>问题类型: 所需材料</strong> <span class="tag tag-orange">1255次</span>
+            </div>
+            <div class="answer-box">回答1: 特药理赔需要上传哪些材料</div><div class="answer-box">回答2: 省外医保理赔需提供在南京满一年居住或工作证明，居住证明包括居住证、租房合同等，工作证明需有单位公章。</div><div class="answer-box">回答3: 异地就医需提供医保结算单，由参保地医保中心出具，金额更准确；若无法提供，可按南京医保数据理算。</div>
+            
+            <div class="question-box">
+                <strong>问题类型: 除外责任</strong> <span class="tag tag-orange">1102次</span>
+            </div>
+            <div class="answer-box">回答1: 宁惠保理赔范围包括住院、门特和门诊大病费用，普通门诊和门诊急诊不在保障范围内。</div><div class="answer-box">回答2: 宁惠保理赔范围包括住院和门特、门诊大病费用，普通门诊和门诊急诊不在保障范围内。</div><div class="answer-box">回答3: 宁惠保理赔范围包括住院和门特、门诊大病经医保结算后达到免赔额的部分，普通门诊和门诊急诊不在保障范围内。</div>
+            
+            <div class="question-box">
+                <strong>问题类型: 理赔时效</strong> <span class="tag tag-orange">1000次</span>
+            </div>
+            <div class="answer-box">回答1: 审核时间：3-7个工作日立案，30个工作日内结案。结案后会有短信通知。</div><div class="answer-box">回答2: 审核时间一般3-7个工作日立案，最晚30个工作日内结案，结案后会有短信通知</div><div class="answer-box">回答3: 审核时间：3-7个工作日立案，30个工作日内结案。结案后会有短信通知，具体以短信为准。</div>
+            
+            <div class="question-box">
+                <strong>问题类型: 什么情况可以理赔</strong> <span class="tag tag-orange">650次</span>
+            </div>
+            <div class="answer-box">回答1: 宁惠保理赔范围包括住院、门特和门诊大病费用，医保结算后剩余费用达免赔额可申请理赔。升级版含门诊日间手术费用保障，需符合20种日间手术病种并享受医保待遇。</div><div class="answer-box">回答2: 宁惠保理赔范围包括住院、门特和门诊大病费用，医保结算后剩余费用达免赔额可申请理赔。升级版含日间门诊手术费用保障。</div><div class="answer-box">回答3: 宁惠保理赔范围包括住院、门特和门诊大病费用，医保结算后剩余部分达免赔额可申请理赔。升级版含门诊日间手术费用，需符合20种病种并享受医保待遇。</div>
+            
+            <div class="question-box">
+                <strong>问题类型: 既往症保障</strong> <span class="tag tag-orange">476次</span>
+            </div>
+            <div class="answer-box">回答1: 本产品保障因疾病或意外导致的住院、门特、门诊大病费用，经医保报销后，达到免赔额后超出部分可赔付，住院不限病种和次数，免赔额全年累计。</div><div class="answer-box">回答2: 既往症指参保人产品生效前已患六种疾病或存在相关病前症状，导致保险期间医疗费用；保单生效后首次确诊或无关的不属于既往症。</div><div class="answer-box">回答3: 既往症指参保人投保前已患六种疾病或存在相关病前症状，导致保险期间医疗费用支出。</div>
+            
+            <div class="question-box">
+                <strong>问题类型: 材料要求</strong> <span class="tag tag-orange">357次</span>
+            </div>
+            <div class="answer-box">回答1: 住院材料需上传完整清晰的住院发票、出院小结、费用明细清单，门诊大病/门特需上传相关发票和认定书，同一病种只需一次就诊病历。</div><div class="answer-box">回答2: 省外医保人员参保需提供保单生效前在南京满一年的居住或工作证明，如居住证、租房合同等。</div><div class="answer-box">回答3: 需补充医保结算单，由参保地医保中心出具，若无法提供可写纸条接受差额并按现有材料理算。</div>
+            
+            <div class="question-box">
+                <strong>问题类型: 保单查询</strong> <span class="tag tag-orange">264次</span>
+            </div>
+            <div class="answer-box">回答1: 理赔申请的渠道有哪些</div><div class="answer-box">回答2: 南京宁惠保六期限时补缴通道已开启，包含双通道门诊用药可赔、医保外费用免赔额降低、海内外特药数量增加、家庭参保共享免赔额、医保个账可为近亲属购买、断保用户续保优待等政策。</div><div class="answer-box">回答3: 南京宁惠保六期限时补缴通道已开启，支持双通道门诊用药、医保外费用免赔额降低、家庭参保共享免赔额等保障内容。</div>
+            
+            <div class="question-box">
+                <strong>问题类型: 保障范围</strong> <span class="tag tag-orange">224次</span>
+            </div>
+            <div class="answer-box">回答1: 理赔申请的渠道有哪些</div><div class="answer-box">回答2: 南京宁惠保的保障范围包括双通道门诊用药、医保外费用免赔额降低、海内外特药数量增加、家庭参保共享免赔额、医保个账可为近亲属购买、断保用户续保优待。</div><div class="answer-box">回答3: 南京宁惠保保障范围包括双通道门诊用药、医保外费用免赔额降低、海内外特药数量增加、家庭参保共享免赔额、医保个账可为近亲属购买、断保用户续保优待。</div>
+            
+            <div class="question-box">
+                <strong>问题类型: 续保规则</strong> <span class="tag tag-orange">178次</span>
+            </div>
+            <div class="answer-box">回答1: 若收到团个重复短信，可在微信公众号南京宁惠保个人中心团个重复里登记</div><div class="answer-box">回答2: 当前无在线客服，请留言。</div><div class="answer-box">回答3: 连续两年及以上购买且未出险，责任二、三及责任四赔付比例提升5%</div>
+            
+        </div>
+
+        <div class="section">
+            <h2>七、应用建议</h2>
+            <div class="question-box">
+                <strong>AI客服系统建设建议：</strong>
+                <ul>
+                    <li><b>知识库构建</b>：将"21418"条问答知识导入AI客服系统</li>
+                    <li><b>高频问题优先</b>：优先覆盖TOP15高频问题类型，覆盖率达96.2%</li>
+                    <li><b>分类管理</b>：按问题大类组织知识库，便于检索和维护</li>
+                    <li><b>回答模板</b>："16458"条标准回答可直接作为模板使用</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

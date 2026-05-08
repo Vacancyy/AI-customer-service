@@ -1,0 +1,41 @@
+# 数据目录 - 含客户隐私和大量文件
+01_source/
+02_download/
+03_process/
+04_output/
+06_models/
+audiotest/
+heli/
+
+# ChromaDB向量库
+chroma_db/
+
+# 高频问题CSV样本（太多小文件）
+05_analyze/高频问题CSV样本/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Claude
+.claude/
+
+# 环境变量（含密钥）
+.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 大文件
+*.mp3
+*.wav
+*.sqlite3
+*.pkl

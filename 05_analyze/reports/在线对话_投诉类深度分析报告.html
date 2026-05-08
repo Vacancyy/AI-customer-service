@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>投诉类深度分析报告</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: "Microsoft YaHei", "SimHei", sans-serif;
+            background: #f5f6fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        .header .subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .nav-links {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            color: #666;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            background: #f0f0f0;
+            transition: all 0.3s;
+        }
+        .nav-links a:hover {
+            background: #E74C3C;
+            color: white;
+        }
+        .nav-links a.active {
+            background: #E74C3C;
+            color: white;
+        }
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .section h2 {
+            color: #E74C3C;
+            font-size: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #E74C3C;
+        }
+        .section h3 {
+            color: #C0392B;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-card .number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #E74C3C;
+        }
+        .stat-card .label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .stat-card.warning .number {
+            color: #F39C12;
+        }
+        .stat-card.danger .number {
+            color: #E74C3C;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #E74C3C;
+            color: white;
+            font-weight: 600;
+        }
+        tr:hover {
+            background: #f5f5f5;
+        }
+        .chart-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .chart-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge-danger { background: #E74C3C; color: white; }
+        .badge-warning { background: #F39C12; color: white; }
+        .badge-success { background: #27AE60; color: white; }
+        .badge-info { background: #3498DB; color: white; }
+        .case-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #E74C3C;
+        }
+        .case-card .case-header {
+            font-weight: 600;
+            color: #E74C3C;
+            margin-bottom: 10px;
+        }
+        .case-card .dialog-content {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 13px;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .recommendation-card {
+            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #E74C3C;
+        }
+        .recommendation-card .rec-type {
+            font-weight: 600;
+            color: #E74C3C;
+            font-size: 16px;
+        }
+        .recommendation-card .rec-content {
+            margin-top: 10px;
+        }
+        .recommendation-card .rec-item {
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        .recommendation-card .rec-item:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #E74C3C;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 12px;
+        }
+        .highlight-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .highlight-box.danger {
+            background: #f8d7da;
+            border-color: #E74C3C;
+        }
+        .highlight-box.success {
+            background: #d4edda;
+            border-color: #27AE60;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>投诉类深度分析报告</h1>
+            <div class="subtitle">数据来源：在线对话 | 分析时间：2026-04-15 11:04</div>
+        </div>
+
+        <div class="nav-links">
+            <a href="#" class="active">投诉类分析</a>
+            <a href="咨询类深度分析报告.html">咨询类分析</a>
+            <a href="查询类深度分析报告.html">查询类分析</a>
+            <a href="办理类深度分析报告.html">办理类分析</a>
+            <a href="总览汇总报告.html">总览汇总</a>
+        </div>
+
+        <!-- 一、数据概览 -->
+        <div class="section">
+            <h2>一、投诉数据概览</h2>
+            <div class="stats-grid">
+                <div class="stat-card danger">
+                    <div class="number">2668</div>
+                    <div class="label">投诉对话总数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">21.4</div>
+                    <div class="label">平均对话长度</div>
+                </div>
+                <div class="stat-card danger">
+                    <div class="number">213</div>
+                    <div class="label">严重投诉数</div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="number">1708</div>
+                    <div class="label">未解决投诉数</div>
+                </div>
+            </div>
+
+            <div class="highlight-box danger">
+            <strong>⚠️ 需要重点关注：</strong>
+            严重投诉占比 8.0%，未解决投诉占比 64.0%。
+            建议立即启动投诉处理专项改进计划。
+        </div>
+        </div>
+
+        <!-- 二、投诉类型分布 -->
+        <div class="section">
+            <h2>二、投诉类型分布分析</h2>
+            <table>
+                <tr>
+                    <th>投诉类型</th>
+                    <th>数量</th>
+                    <th>占比</th>
+                    <th>说明</th>
+                </tr>
+                <tr>
+            <td>理赔时效投诉</td>
+            <td>804</td>
+            <td>30.1%</td>
+            <td>对理赔审核、打款时间过慢不满</td>
+        </tr>
+<tr>
+            <td>拒赔投诉</td>
+            <td>467</td>
+            <td>17.5%</td>
+            <td>对拒赔结果有异议，认为应该理赔</td>
+        </tr>
+<tr>
+            <td>流程复杂投诉</td>
+            <td>421</td>
+            <td>15.8%</td>
+            <td>对理赔流程繁琐、材料要求多不满</td>
+        </tr>
+<tr>
+            <td>理赔金额异议</td>
+            <td>419</td>
+            <td>15.7%</td>
+            <td>对赔付金额不满意，认为金额不合理</td>
+        </tr>
+<tr>
+            <td>其他投诉</td>
+            <td>407</td>
+            <td>15.3%</td>
+            <td>其他类型投诉</td>
+        </tr>
+<tr>
+            <td>服务态度投诉</td>
+            <td>146</td>
+            <td>5.5%</td>
+            <td>对客服态度、专业性不满</td>
+        </tr>
+<tr>
+            <td>重复投保投诉</td>
+            <td>2</td>
+            <td>0.1%</td>
+            <td></td>
+        </tr>
+<tr>
+            <td>退款处理延迟投诉</td>
+            <td>1</td>
+            <td>0.0%</td>
+            <td></td>
+        </tr>
+<tr>
+            <td>未知</td>
+            <td>1</td>
+            <td>0.0%</td>
+            <td></td>
+        </tr>
+            </table>
+        </div>
+
+        <!-- 三、投诉发生阶段 -->
+        <div class="section">
+            <h2>三、投诉发生理赔阶段分析</h2>
+            <table>
+                <tr>
+                    <th>理赔阶段</th>
+                    <th>数量</th>
+                    <th>占比</th>
+                </tr>
+                <tr>
+            <td>理赔申请阶段</td>
+            <td>1479</td>
+            <td>55.4%</td>
+        </tr>
+<tr>
+            <td>材料审核阶段</td>
+            <td>538</td>
+            <td>20.2%</td>
+        </tr>
+<tr>
+            <td>投保阶段</td>
+            <td>431</td>
+            <td>16.2%</td>
+        </tr>
+<tr>
+            <td>等待打款阶段</td>
+            <td>116</td>
+            <td>4.3%</td>
+        </tr>
+<tr>
+            <td>其他阶段</td>
+            <td>94</td>
+            <td>3.5%</td>
+        </tr>
+<tr>
+            <td>理赔完成后</td>
+            <td>10</td>
+            <td>0.4%</td>
+        </tr>
+            </table>
+        </div>
+
+        <!-- 四、投诉严重程度 -->
+        <div class="section">
+            <h2>四、投诉严重程度分析</h2>
+
+            <div class="severity-criteria-box" style="background:#f8f9fa; padding:15px; border-radius:8px; margin-bottom:20px; border-left:4px solid #E74C3C;">
+                <strong>严重程度判断标准：</strong>
+                <ul style="margin:10px 0 0 20px; font-size:13px;">
+                    <li><span style="color:#E74C3C; font-weight:bold;">严重</span>：客户情绪激动、多次追问质疑、威胁向监管部门投诉、涉及金额较大（超过1万元）、明确表示强烈不满</li>
+                    <li><span style="color:#F39C12; font-weight:bold;">中等</span>：有明显不满情绪、问题需要跟进处理、投诉倾向明显、对结果有异议但态度尚可</li>
+                    <li><span style="color:#27AE60; font-weight:bold;">轻微</span>：仅咨询性质、情绪平和、问题简单可快速解决、投诉关键词但不强烈</li>
+                </ul>
+            </div>
+
+            <table>
+                <tr>
+                    <th>严重程度</th>
+                    <th>数量</th>
+                    <th>占比</th>
+                    <th>处理优先级</th>
+                </tr>
+                <tr>
+            <td><span class="badge badge-warning">中等</span></td>
+            <td>2210</td>
+            <td>82.8%</td>
+            <td>优先处理</td>
+        </tr>
+<tr>
+            <td><span class="badge badge-success">轻微</span></td>
+            <td>244</td>
+            <td>9.1%</td>
+            <td>常规处理</td>
+        </tr>
+<tr>
+            <td><span class="badge badge-danger">严重</span></td>
+            <td>213</td>
+            <td>8.0%</td>
+            <td>立即处理</td>
+        </tr>
+<tr>
+            <td><span class="badge ">未知</span></td>
+            <td>1</td>
+            <td>0.0%</td>
+            <td></td>
+        </tr>
+            </table>
+        </div>
+
+        <!-- 五、投诉根本原因 -->
+        <div class="section">
+            <h2>五、投诉根本原因 TOP10</h2>
+            <table>
+                <tr>
+                    <th>排名</th>
+                    <th>根本原因</th>
+                    <th>出现次数</th>
+                </tr>
+                <tr>
+            <td>1</td>
+            <td>理赔申请未及时立案处理。</td>
+            <td>22</td>
+        </tr>
+<tr>
+            <td>2</td>
+            <td>理赔审核周期过长导致客户不满。</td>
+            <td>14</td>
+        </tr>
+<tr>
+            <td>3</td>
+            <td>客服响应不及时导致客户不满。</td>
+            <td>12</td>
+        </tr>
+<tr>
+            <td>4</td>
+            <td>理赔处理周期过长导致客户不满。</td>
+            <td>11</td>
+        </tr>
+<tr>
+            <td>5</td>
+            <td>理赔未达免赔额，暂不赔付。</td>
+            <td>11</td>
+        </tr>
+<tr>
+            <td>6</td>
+            <td>理赔流程延迟导致客户不满。</td>
+            <td>8</td>
+        </tr>
+<tr>
+            <td>7</td>
+            <td>理赔处理延迟导致客户不满。</td>
+            <td>8</td>
+        </tr>
+<tr>
+            <td>8</td>
+            <td>理赔申请未及时处理导致客户不满。</td>
+            <td>8</td>
+        </tr>
+<tr>
+            <td>9</td>
+            <td>理赔流程延迟导致客户不满</td>
+            <td>7</td>
+        </tr>
+<tr>
+            <td>10</td>
+            <td>客服响应迟缓导致客户不满。</td>
+            <td>7</td>
+        </tr>
+            </table>
+        </div>
+
+        <!-- 六、投诉处理效果 -->
+        <div class="section">
+            <h2>六、投诉处理效果分析</h2>
+            <table>
+                <tr>
+                    <th>处理结果</th>
+                    <th>数量</th>
+                    <th>占比</th>
+                </tr>
+                <tr>
+            <td><span class="badge badge-danger">未解决</span></td>
+            <td>1708</td>
+            <td>64.0%</td>
+        </tr>
+<tr>
+            <td><span class="badge badge-warning">部分解决</span></td>
+            <td>836</td>
+            <td>31.3%</td>
+        </tr>
+<tr>
+            <td><span class="badge badge-success">已解决</span></td>
+            <td>124</td>
+            <td>4.6%</td>
+        </tr>
+            </table>
+
+            <div class="highlight-box danger">
+                <strong>处理效果分析：</strong>
+                已解决率 4.6%，
+                未解决率 64.0%。
+                投诉解决率偏低，需要重点改进投诉处理流程和客服培训。
+            </div>
+        </div>
+
+        <!-- 七、高频投诉问题分析 -->
+        <div class="section">
+            <h2>七、高频投诉问题分析</h2>
+            <table>
+                <tr>
+                    <th>排名</th>
+                    <th>投诉问题</th>
+                    <th>出现次数</th>
+                    <th>严重程度</th>
+                    <th>投诉类型</th>
+                    <th>发生阶段</th>
+                    <th>客户诉求摘要</th>
+                    <th>客服回复摘要</th>
+                </tr>
+                <tr>
+            <td>1</td>
+            <td>理赔申请未及时立案处理。</td>
+            <td>22</td>
+            <td><span class="badge" style="background:#F39C12; color:white;">中等</span></td>
+            <td>理赔时效投诉</td>
+            <td>理赔申请阶段</td>
+            <td style="max-width:180px; font-size:12px;">麻烦您帮查询一下</td>
+            <td style="max-width:180px; font-size:12px;">-</td>
+        </tr>
+<tr>
+            <td>2</td>
+            <td>理赔审核周期过长导致客户不满。</td>
+            <td>14</td>
+            <td><span class="badge" style="background:#F39C12; color:white;">中等</span></td>
+            <td>理赔时效投诉</td>
+            <td>理赔申请阶段</td>
+            <td style="max-width:180px; font-size:12px;">请问申请了多久才出来理赔不理赔</td>
+            <td style="max-width:180px; font-size:12px;">审核时间：3-7个工作日立案，30个工作日内结案。（结案前会有短信通知的，具体以短信通知为准）</td>
+        </tr>
+<tr>
+            <td>3</td>
+            <td>客服响应不及时导致客户不满。</td>
+            <td>12</td>
+            <td><span class="badge" style="background:#F39C12; color:white;">中等</span></td>
+            <td>服务态度投诉</td>
+            <td>投保阶段</td>
+            <td style="max-width:180px; font-size:12px;">你好，我9月份买的第6期宁惠保升级版，现在中行为我们买了宁惠保团保普通班，我能退保改成退保吗</td>
+            <td style="max-width:180px; font-size:12px;">南京宁惠保六期【限时补缴通道】已开启！双通道门诊用药可赔医保外费用免赔额降低海内外特药数量增加家庭参</td>
+        </tr>
+<tr>
+            <td>4</td>
+            <td>理赔处理周期过长导致客户不满。</td>
+            <td>11</td>
+            <td><span class="badge" style="background:#F39C12; color:white;">中等</span></td>
+            <td>理赔时效投诉</td>
+            <td>理赔申请阶段</td>
+            <td style="max-width:180px; font-size:12px;">我申请的怎么还没立案</td>
+            <td style="max-width:180px; font-size:12px;">南京宁惠保六期【限时补缴通道】已开启！双通道门诊用药可赔医保外费用免赔额降低海内外特药数量增加家庭参</td>
+        </tr>
+<tr>
+            <td>5</td>
+            <td>理赔未达免赔额，暂不赔付。</td>
+            <td>11</td>
+            <td><span class="badge" style="background:#F39C12; color:white;">中等</span></td>
+            <td>拒赔投诉</td>
+            <td>理赔申请阶段</td>
+            <td style="max-width:180px; font-size:12px;">我上次报理赔没给我赔，说没达到理赔额度</td>
+            <td style="max-width:180px; font-size:12px;">您好，如果您收到短信通知提示您本次申请未达起付线，暂不赔付的通知，并不是说拒赔或者不赔，因为宁惠保是</td>
+        </tr>
+<tr>
+            <td>6</td>
+            <td>理赔流程延迟导致客户不满。</td>
+            <td>8</td>
+            <td><span class="badge" style="background:#F39C12; color:white;">中等</span></td>
+            <td>理赔时效投诉</td>
+            <td>理赔申请阶段</td>
+            <td style="max-width:180px; font-size:12px;">啥时候才能立案</td>
+            <td style="max-width:180px; font-size:12px;">传统理赔：一般情况下在3个工作日立案，30天内结案 快赔：一般情况下常规案 件需要5-7个工作日左右</td>
+        </tr>
+<tr>
+            <td>7</td>
+            <td>理赔处理延迟导致客户不满。</td>
+            <td>8</td>
+            <td><span class="badge" style="background:#F39C12; color:white;">中等</span></td>
+            <td>理赔时效投诉</td>
+            <td>理赔申请阶段</td>
+            <td style="max-width:180px; font-size:12px;">我有个理赔看时间蛮久的了 还没立案呢？</td>
+            <td style="max-width:180px; font-size:12px;">南京宁惠保六期【限时补缴通道】已开启！双通道门诊用药可赔医保外费用免赔额降低海内外特药数量增加家庭参</td>
+        </tr>
+<tr>
+            <td>8</td>
+            <td>理赔申请未及时处理导致客户不满。</td>
+            <td>8</td>
+            <td><span class="badge" style="background:#F39C12; color:white;">中等</span></td>
+            <td>理赔时效投诉</td>
+            <td>理赔申请阶段</td>
+            <td style="max-width:180px; font-size:12px;">你好，我1月5日申请的理赔怎么还没有立案啊？</td>
+            <td style="max-width:180px; font-size:12px;">南京宁惠保六期【限时补缴通道】已开启！双通道门诊用药可赔医保外费用免赔额降低海内外特药数量增加家庭参</td>
+        </tr>
+<tr>
+            <td>9</td>
+            <td>理赔流程延迟导致客户不满</td>
+            <td>7</td>
+            <td><span class="badge" style="background:#F39C12; color:white;">中等</span></td>
+            <td>理赔时效投诉</td>
+            <td>理赔申请阶段</td>
+            <td style="max-width:180px; font-size:12px;">理赔怎么两天了还没立案</td>
+            <td style="max-width:180px; font-size:12px;">南京宁惠保六期【限时补缴通道】已开启！双通道门诊用药可赔医保外费用免赔额降低海内外特药数量增加家庭参</td>
+        </tr>
+<tr>
+            <td>10</td>
+            <td>客服响应迟缓导致客户不满。</td>
+            <td>7</td>
+            <td><span class="badge" style="background:#E74C3C; color:white;">严重</span></td>
+            <td>服务态度投诉</td>
+            <td>其他阶段</td>
+            <td style="max-width:180px; font-size:12px;">电话总是没人接</td>
+            <td style="max-width:180px; font-size:12px;">-</td>
+        </tr>
+            </table>
+        </div>
+
+        <!-- 八、优化方案 -->
+        <div class="section">
+            <h2>八、投诉优化方案与建议</h2>
+            <div class="recommendation-card">
+            <div class="rec-type">理赔时效投诉优化</div>
+            <div class="rec-content">
+                <div class="rec-item"><strong>问题诊断：</strong>理赔审核和处理时间过长，客户等待焦虑</div>
+                <div class="rec-item"><strong>解决方案：</strong>建立理赔进度实时查询系统，定期推送进度通知，设置时效预警</div>
+                <div class="rec-item"><strong>预防建议：</strong>优化审核流程，设立时效监控指标，超过10天自动预警，专人跟进</div>
+            </div>
+        </div>
+<div class="recommendation-card">
+            <div class="rec-type">拒赔投诉优化</div>
+            <div class="rec-content">
+                <div class="rec-item"><strong>问题诊断：</strong>客户对拒赔结果不理解、不接受</div>
+                <div class="rec-item"><strong>解决方案：</strong>拒赔时提供详细书面解释，告知条款依据和申诉渠道</div>
+                <div class="rec-item"><strong>预防建议：</strong>优化拒赔沟通模板，提供条款解读服务，建立拒赔复核机制</div>
+            </div>
+        </div>
+<div class="recommendation-card">
+            <div class="rec-type">理赔金额异议优化</div>
+            <div class="rec-content">
+                <div class="rec-item"><strong>问题诊断：</strong>客户对赔付金额不满意，不理解计算方式</div>
+                <div class="rec-item"><strong>解决方案：</strong>提供金额计算明细说明，解释赔付比例和扣减项目</div>
+                <div class="rec-item"><strong>预防建议：</strong>优化金额计算透明度，提供在线计算明细查询功能</div>
+            </div>
+        </div>
+<div class="recommendation-card">
+            <div class="rec-type">服务态度优化</div>
+            <div class="rec-content">
+                <div class="rec-item"><strong>问题诊断：</strong>客服沟通方式和态度问题</div>
+                <div class="rec-item"><strong>解决方案：</strong>加强客服培训，建立投诉话术标准，提升同理心</div>
+                <div class="rec-item"><strong>预防建议：</strong>实施客服满意度评价，定期质检录音，建立考核激励机制</div>
+            </div>
+        </div>
+<div class="recommendation-card">
+            <div class="rec-type">流程简化优化</div>
+            <div class="rec-content">
+                <div class="rec-item"><strong>问题诊断：</strong>理赔流程繁琐，材料要求多</div>
+                <div class="rec-item"><strong>解决方案：</strong>简化理赔材料清单，提供一站式理赔服务指引</div>
+                <div class="rec-item"><strong>预防建议：</strong>优化线上理赔流程，减少重复材料提交，智能预填表单</div>
+            </div>
+        </div>
+<div class="recommendation-card">
+            <div class="rec-type">投诉解决率提升</div>
+            <div class="rec-content">
+                <div class="rec-item"><strong>问题诊断：</strong>投诉解决率偏低，客户不满持续</div>
+                <div class="rec-item"><strong>解决方案：</strong>加强客服培训和授权，提升一线处理能力</div>
+                <div class="rec-item"><strong>预防建议：</strong>建立投诉复盘机制，分析未解决原因，针对性改进</div>
+            </div>
+        </div>
+<div class="recommendation-card">
+            <div class="rec-type">理赔申请阶段优化</div>
+            <div class="rec-content">
+                <div class="rec-item"><strong>问题诊断：</strong>理赔申请阶段投诉集中</div>
+                <div class="rec-item"><strong>解决方案：</strong>优化理赔申请引导，提供材料清单和操作指南</div>
+                <div class="rec-item"><strong>预防建议：</strong>简化申请流程，提供在线材料上传和预审功能</div>
+            </div>
+        </div>
+        </div>
+
+        <!-- 九、总体建议 -->
+        <div class="section">
+            <h2>九、总体优化建议</h2>
+            <div class="recommendation-card">
+                <div class="rec-type">系统性改进建议</div>
+                <div class="rec-content">
+                    <div class="rec-item">建立投诉预警机制：对理赔时长超过规定期限的案件自动预警，提前介入</div>
+                    <div class="rec-item">优化沟通流程：制定标准化投诉处理话术，提升客服专业度和同理心</div>
+                    <div class="rec-item">提升透明度：提供理赔进度实时查询功能，让客户随时了解处理状态</div>
+                    <div class="rec-item">建立回访机制：投诉处理完成后48小时内主动回访确认满意度</div>
+                    <div class="rec-item">数据分析闭环：每周分析投诉数据，持续优化产品和服务流程</div>
+                    <div class="rec-item">培训赋能：定期组织投诉处理培训，分享典型案例和处理技巧</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            报告生成时间：2026-04-15 11:04:32 |
+            分析脚本：analyze_complaint.py |
+            数据来源：在线对话
+        </div>
+    </div>
+</body>
+</html>
