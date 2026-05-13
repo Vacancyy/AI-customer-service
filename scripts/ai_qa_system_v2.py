@@ -1,101 +1,91 @@
 """
 AI客服问答系统 - 向量化RAG
 流程：
-1. 知识库222个问题 → Embedding向量化 → ChromaDB存储
-2. 客户提问 → Embedding向量 → ChromaDB检索Top-3
+1. 知识库223个问题 → 本地Embedding向量化 → ChromaDB存储
+2. 客户提问 → 本地Embedding向量 → ChromaDB检索Top-3
 3. 检索结果 + 客户问题 → Qwen3-8B生成回答
 
-注：当前知识库222条，Embedding一次检索即可精准命中Top-3，无需Rerank精排。
-    当知识库扩展到数千条时，可加Rerank（lte-rerank-v2）做两阶段检索。
+注：Embedding使用本地模型(bge-large-zh-v1.5)，不依赖DashScope API。
+    LLM调用仍需DashScope API Key（或应用级Token）。
 """
 
 import json
+import re
 import requests
 import chromadb
 import os
-import time
+import numpy as np
+from sentence_transformers import SentenceTransformer
 
 # ==================== 配置 ====================
 API_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
-EMBEDDING_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings"
-API_KEY = os.environ.get("DASHSCOPE_API_KEY", "")
-API_MODEL = "qwen3-8b"
-EMBEDDING_MODEL = "text-embedding-v3"
+API_KEY = os.environ.get("DASHSCOPE_API_KEY", "REMOVED_API_KEY")
+API_MODEL = "qwen3-32b"
+
+# 本地Embedding模型路径（已通过ModelScope下载到本地）
+LOCAL_EMBEDDING_MODEL = os.path.join(
+    os.environ.get("PROJECT_ROOT", os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+    '06_models/embedding_model/AI-ModelScope/bge-large-zh-v1.5'
+)
 
 # 项目根目录：优先用环境变量，否则基于脚本位置推断
 PROJECT_ROOT = os.environ.get("PROJECT_ROOT", os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 QA_JSON_PATH = os.path.join(PROJECT_ROOT, '05_analyze/reports/知识库_优化版.json')
-CHROMA_PATH = os.path.join(PROJECT_ROOT, 'chroma_db')
+CHROMA_PATH = os.path.join(PROJECT_ROOT, '06_models/chroma_db')
+
+# 全局Embedding模型实例（懒加载）
+_embedding_model = None
 
 
-def get_embeddings(texts, batch_size=6):
-    """批量调用Embedding API，返回向量列表，失败时逐条重试"""
-    all_embeddings = [None] * len(texts)
+def get_embedding_model():
+    """懒加载本地Embedding模型"""
+    global _embedding_model
+    if _embedding_model is None:
+        print(f"  加载本地Embedding模型: {LOCAL_EMBEDDING_MODEL}...")
+        _embedding_model = SentenceTransformer(LOCAL_EMBEDDING_MODEL)
+        print(f"  模型加载完成，向量维度: {_embedding_model.get_sentence_embedding_dimension()}")
+    return _embedding_model
 
-    # 先批量处理
-    failed_indices = []
-    for i in range(0, len(texts), batch_size):
-        batch = texts[i:i+batch_size]
-        try:
-            response = requests.post(
-                EMBEDDING_URL,
-                headers={
-                    "Authorization": f"Bearer {API_KEY}",
-                    "Content-Type": "application/json"
-                },
-                json={
-                    "model": EMBEDDING_MODEL,
-                    "input": batch,
-                },
-                timeout=60,
-            )
-            result = response.json()
-            if "data" in result:
-                data = sorted(result["data"], key=lambda x: x["index"])
-                for j, d in enumerate(data):
-                    all_embeddings[i + j] = d["embedding"]
-            else:
-                for j in range(len(batch)):
-                    failed_indices.append(i + j)
-        except Exception as e:
-            for j in range(len(batch)):
-                failed_indices.append(i + j)
 
-        if i + batch_size < len(texts):
-            time.sleep(0.3)
+def get_embeddings(texts):
+    """使用本地模型批量生成Embedding向量"""
+    model = get_embedding_model()
+    embeddings = model.encode(texts, normalize_embeddings=True, show_progress_bar=len(texts) > 10)
+    return embeddings.tolist()
 
-    # 逐条重试失败的
-    for idx in failed_indices:
-        try:
-            response = requests.post(
-                EMBEDDING_URL,
-                headers={
-                    "Authorization": f"Bearer {API_KEY}",
-                    "Content-Type": "application/json"
-                },
-                json={
-                    "model": EMBEDDING_MODEL,
-                    "input": [texts[idx]],
-                },
-                timeout=30,
-            )
-            result = response.json()
-            if "data" in result:
-                all_embeddings[idx] = result["data"][0]["embedding"]
-                print(f"  重试成功: 第{idx+1}条")
-            else:
-                print(f"  重试失败: 第{idx+1}条 - {str(result)[:100]}")
-        except Exception as e:
-            print(f"  重试失败: 第{idx+1}条 - {e}")
-        time.sleep(0.3)
 
-    if None in all_embeddings:
-        return None
-    return all_embeddings
+def filter_pii(text):
+    """脱敏用户输入中的隐私信息"""
+    text = re.sub(r'\d{17}[\dXx]', '[身份证号已脱敏]', text)
+    text = re.sub(r'1[3-9]\d{9}', '[手机号已脱敏]', text)
+    return text
+
+
+def scan_output_pii(text):
+    """扫描AI输出中的隐私信息并脱敏"""
+    text = re.sub(r'\d{17}[\dXx]', '[身份证号已脱敏]', text)
+    text = re.sub(r'1[3-9]\d{9}', '[手机号已脱敏]', text)
+    return text
+
+
+def add_disclaimer(answer):
+    """涉及赔付金额/比例时追加免责声明"""
+    # 检测回答中是否包含金额、比例等关键数字
+    if re.search(r'(免赔额|赔付比例|保费|保额|报销|理赔金额|赔付).*\d+', answer):
+        if '仅供参考' not in answer:
+            answer += '\n\n（以上信息仅供参考，具体以保险条款约定为准）'
+    return answer
 
 
 class ImprovedQASystem:
     """AI客服问答系统 - 向量化RAG"""
+
+    # 数据库配置
+    DB_HOST = "REMOVED_DB_HOST"
+    DB_PORT = 3308
+    DB_USER = "REMOVED_DB_USER"
+    DB_PASS = "REMOVED_DB_PASSWORD"
+    DB_NAME = "ai_customer_service"
 
     def __init__(self, rebuild=False):
         # 加载知识库
@@ -186,9 +176,17 @@ class ImprovedQASystem:
 
         return matched
 
-    def _call_llm(self, prompt):
-        """调用大模型生成回答"""
+    def _call_llm(self, prompt, history=None):
+        """调用大模型生成回答（支持多轮对话）"""
         try:
+            # 构建messages：先加入历史对话，再加入当前prompt
+            messages = []
+            if history:
+                for h in history[-6:]:  # 最多保留最近3轮（每轮2条）
+                    messages.append({"role": "user", "content": h["question"]})
+                    messages.append({"role": "assistant", "content": h["answer"]})
+            messages.append({"role": "user", "content": prompt})
+
             response = requests.post(
                 API_URL,
                 headers={
@@ -197,9 +195,9 @@ class ImprovedQASystem:
                 },
                 json={
                     "model": API_MODEL,
-                    "messages": [{"role": "user", "content": prompt}],
+                    "messages": messages,
                     "temperature": 0.1,
-                    "max_tokens": 600,
+                    "max_tokens": 400,
                     "enable_thinking": False,
                 },
                 timeout=60,
@@ -209,27 +207,59 @@ class ImprovedQASystem:
         except Exception as e:
             return f"ERROR: {str(e)}"
 
-    def get_answer(self, question):
-        """获取回答：向量检索 + 大模型生成"""
-        # 第一步：向量检索
-        matched = self.search_knowledge(question, top_k=3)
+    def _save_log(self, question, answer, best_score, matched, confidence_level, response_time):
+        """保存对话日志到MySQL"""
+        try:
+            import pymysql
+            conn = pymysql.connect(
+                host=self.DB_HOST, port=self.DB_PORT,
+                user=self.DB_USER, password=self.DB_PASS,
+                database=self.DB_NAME
+            )
+            cur = conn.cursor()
+            top1_question = matched[0]['qa']['std_question'] if matched else ''
+            cur.execute(
+                "INSERT INTO ai_chat_log (question, answer, top1_score, top1_question, confidence_level, model_name, response_time) "
+                "VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                (question, answer, best_score, top1_question, confidence_level, API_MODEL, response_time)
+            )
+            conn.commit()
+            conn.close()
+        except Exception:
+            pass  # 日志写入失败不影响主流程
 
-        if not matched or matched[0]['score'] < 0.3:
-            return "您好，这个问题需要咨询人工客服，请拨打4000040181"
-
-        # 第二步：构建上下文（完整回答，不截断）
+    def _build_context(self, matched):
+        """构建上下文（完整回答，不截断）"""
         context = ""
         for i, item in enumerate(matched, 1):
             qa = item['qa']
             context += f"【参考{i}】(相关度:{item['score']:.2f})\n问题: {qa['std_question']}\n回答: {qa['answer']}\n\n"
+        return context
 
-        # 第三步：大模型生成
+    def _build_prompt(self, question, context):
+        """构建大模型prompt"""
         prompt = f"""你是南京宁惠保的AI客服，请【严格仅根据下方知识库内容】回答客户问题。
 
 【禁止事项】
 - 禁止编造知识库中没有的信息
 - 禁止用自己的知识补充知识库没有的细节
-- 禁止概括或改写知识库的具体流程、步骤、材料清单，必须照原样列出
+- 禁止概括或改写知识库的具体流程、步骤、材料清单
+- 禁止引用知识库中带有特定客户信息的内容
+
+【回答原则】
+- 只回答用户问的问题，不要主动扩展到用户未询问的话题
+- 如果用户问简单问题（如"犹豫期多久"），给出简洁回答，不要展开
+- 如果检索到多条相关信息，优先引用最直接回答用户问题的一条
+- 控制回答在3-5句话以内，避免过度展开
+- 如果知识库中有基础版和升级版两套数据，必须完整列出两版的数字
+- 如果知识库中有既往症和非既往症的区分，必须说明两者的差异
+
+【回答风格示例】
+❌ 用户问"犹豫期多久"，AI回答"这款产品无犹豫期，等待期是...，保障期是..."
+✓ 用户问"犹豫期多久"，AI回答"您好，这款产品无犹豫期"
+
+❌ 用户问"保费多少钱"，AI回答"99元。此外宁惠保还提供双通道门诊用药报销..."
+✓ 用户问"保费多少钱"，AI回答"您好，基础版保费99元，升级版保费150元"
 
 **同义词对照**
 - 门槛费 = 起付线 = 免赔额
@@ -242,18 +272,66 @@ class ImprovedQASystem:
 客户问题: {question}
 
 要求:
-1. 只使用上方知识库中的内容回答，一字不差地保留流程步骤、材料清单、具体数字
+1. 只使用上方知识库中的内容回答
 2. 用"您好"开头
-3. 知识库中有具体数字的，必须完整列出（免赔额金额、赔付比例、保费、保额等），不能省略
-4. 如果有多个版本/责任的区别，逐条列出
-5. 如果有多条参考内容，综合回答
-6. 知识库没有的内容，回复"您好，这个问题需要咨询人工客服，请拨打4000040181"
+3. 有具体数字的必须完整列出（免赔额金额、赔付比例、保费等）
+4. 有多个版本/责任的区别时，用①②③逐条列出
+5. 知识库没有的内容，回复"您好，这个问题需要咨询人工客服，请拨打4000040181"
 
 直接回答:"""
+        return prompt
 
-        answer = self._call_llm(prompt)
+    def get_answer(self, question, history=None):
+        """获取回答：向量检索 + 置信度分层 + 大模型生成（支持多轮对话）"""
+        import time
+        start_time = time.time()
+
+        # PII输入脱敏
+        original_question = question
+        question = filter_pii(question)
+
+        # 第一步：向量检索
+        matched = self.search_knowledge(question, top_k=3)
+
+        # 低置信度：直接转人工
+        if not matched or matched[0]['score'] < 0.5:
+            answer = "您好，这个问题需要咨询人工客服获取准确解答。\n\n请拨打4000040181。"
+            confidence_level = 'low'
+            best_score = matched[0]['score'] if matched else 0.0
+            elapsed = time.time() - start_time
+            self._save_log(question, answer, best_score, matched, confidence_level, elapsed)
+            return answer
+
+        best_score = matched[0]['score']
+
+        # 构建上下文和prompt
+        context = self._build_context(matched)
+        prompt = self._build_prompt(question, context)
+        answer = self._call_llm(prompt, history=history)
+        elapsed = time.time() - start_time
+
         if answer.startswith("ERROR:"):
-            return "您好，系统暂时无法回答，请拨打人工客服4000040181"
+            answer = "您好，系统暂时无法回答，请拨打人工客服4000040181。"
+            self._save_log(question, answer, best_score, matched, 'error', elapsed)
+            return answer
+
+        # PII输出脱敏
+        answer = scan_output_pii(answer)
+
+        # 免责声明
+        answer = add_disclaimer(answer)
+
+        # 高置信度（≥0.7）：直接回答
+        if best_score >= 0.7:
+            confidence_level = 'high'
+            self._save_log(question, answer, best_score, matched, confidence_level, elapsed)
+            return answer
+
+        # 中置信度（0.5-0.7）：回答 + 补充转人工提示
+        confidence_level = 'medium'
+        if "4000040181" not in answer:
+            answer += "\n\n如需进一步帮助，请咨询人工客服：4000040181。"
+        self._save_log(question, answer, best_score, matched, confidence_level, elapsed)
         return answer
 
 
