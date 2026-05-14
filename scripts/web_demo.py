@@ -21,7 +21,8 @@ app = FastAPI()
 
 # 全局初始化（启动时只加载一次）
 qa_system = None
-chat_history = []  # 简单的内存记录
+# 注意：会话历史由前端JavaScript管理，后端不再存储
+# 日志记录统一存入MySQL ai_chat_log表，支持多用户并发
 
 
 class Question(BaseModel):
@@ -62,13 +63,7 @@ async def ask(q: Question):
             "score": f"{item['score']:.3f}",
         })
 
-    # 记录历史
-    chat_history.append({
-        "question": q.question.strip(),
-        "answer": answer,
-        "time": f"{elapsed:.1f}s",
-        "sources": sources,
-    })
+    # 日志已由ai_qa_system_v2写入MySQL，无需内存存储
 
     return {
         "answer": answer,
@@ -79,7 +74,7 @@ async def ask(q: Question):
 
 @app.get("/logs")
 async def get_logs(limit=50):
-    """查看最近对话日志"""
+    """查看最近对话日志（从MySQL读取）"""
     try:
         import pymysql
         conn = pymysql.connect(
@@ -97,18 +92,13 @@ async def get_logs(limit=50):
         logs = []
         for r in rows:
             logs.append({
-                "id": r[0], "question": r[1], "answer": r[2][:100],
+                "id": r[0], "question": r[1], "answer": r[2][:100] if r[2] else "",
                 "top1_score": r[3], "confidence": r[4],
                 "model": r[5], "time": f"{r[6]:.1f}s", "created_at": str(r[7])
             })
         return {"logs": logs}
     except Exception as e:
         return {"logs": [], "error": str(e)}
-
-
-@app.get("/history")
-async def history():
-    return {"history": chat_history[-50:]}
 
 
 # ==================== 前端页面 ====================
