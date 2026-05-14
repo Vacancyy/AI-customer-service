@@ -63,42 +63,42 @@ def filter_pii(text):
 
 def is_personal_query(text):
     """判断是否为个人数据查询意图（需要转人工）"""
-    # 个人数据查询关键词
-    personal_keywords = [
+    # 明确的个人数据查询关键词（必须转人工）
+    strict_personal_keywords = [
         # 查询进度
-        '我的理赔进度', '理赔进展', '理赔到哪', '审核到哪', '我的申请进度',
-        '理赔状态', '理赔审核状态', '我的理赔情况', '理赔怎么还没',
-        # 查询金额
-        '理赔金额', '赔付多少', '能赔多少', '报销多少', '我的理赔款',
-        '赔付金额', '能报销多少', '我能拿到多少',
-        # 个人保单/账户
-        '我的保单', '我的保险', '保单状态', '我的投保', '我的账户',
-        '缴费记录', '我的保费', '续保状态',
-        # 查询结果
-        '我的理赔结果', '理赔通过了吗', '理赔批了吗',
-        # 带有个人信息标识
-        '我的', '本人', '我已提交', '我已经申请',
+        '我的理赔进度', '理赔到哪了', '审核到哪了', '我的申请进度',
+        '理赔审核状态', '我的理赔情况', '理赔怎么还没到',
+        # 查询金额（具体数字）
+        '我的理赔金额', '我的赔付', '我的报销', '我的理赔款',
+        '我能赔多少钱', '我能拿多少',
+        # 个人保单状态查询
+        '我的保单在哪', '我的保单状态', '查我的保单', '我的投保状态',
+        '我的续保', '我的缴费', '查我的',
+        # 理赔结果查询
+        '我的理赔结果', '理赔通过了吗', '理赔批了吗', '我的申请被',
     ]
 
-    # 查询类动词
-    query_verbs = ['查询', '查', '看', '了解', '知道', '多少', '进度', '状态', '结果']
-
-    # 判断逻辑：包含"我的/本人" + 查询动词/关键词
-    has_personal = any(kw in text for kw in ['我的', '本人', '我已', '我已经申请'])
-    has_query = any(kw in text for kw in query_verbs)
-
-    # 或直接命中个人数据关键词
-    for kw in personal_keywords:
+    # 直接命中严格个人查询关键词
+    for kw in strict_personal_keywords:
         if kw in text:
             return True
 
-    # "我的" + 查询类问题组合判断
-    if has_personal and has_query:
-        # 排除通用问题（如"我的保费多少钱"应该是通用问题）
-        exclude_keywords = ['保费多少钱', '保费多少', '多少钱', '门槛', '起付线', '保障范围']
-        if any(kw in text for kw in exclude_keywords):
-            return False
+    # 组合判断：需要同时满足两个条件
+    # 条件1：包含个人标识词
+    personal_indicators = ['我的理赔', '我的保单', '我的申请', '我的账户', '查我的', '我的进度']
+    has_personal_indicator = any(kw in text for kw in personal_indicators)
+
+    # 条件2：包含查询动词
+    query_verbs = ['查询', '查一下', '看一下', '进度', '状态', '结果', '到账', '到哪']
+
+    if has_personal_indicator and any(kw in text for kw in query_verbs):
         return True
+
+    # 特殊模式：问自己能否参保/报销是通用咨询，不是个人查询
+    # 如"本人参加医保可以投保吗"、"我的父母可以买吗" 是通用咨询
+    exclude_patterns = ['可以投保', '可以买', '可以参保', '可以报销吗', '能报销吗', '可以理赔吗', '能理赔吗', '能不能', '是否可以']
+    if any(pattern in text for pattern in exclude_patterns):
+        return False
 
     return False
 
