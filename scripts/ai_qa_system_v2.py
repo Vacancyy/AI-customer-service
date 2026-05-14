@@ -19,7 +19,7 @@ from sentence_transformers import SentenceTransformer
 
 # ==================== 配置 ====================
 API_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
-API_KEY = os.environ.get("DASHSCOPE_API_KEY", "REMOVED_API_KEY")
+API_KEY = os.environ.get("DASHSCOPE_API_KEY", "")
 API_MODEL = "qwen3-32b"
 
 # 本地Embedding模型路径（已通过ModelScope下载到本地）
@@ -80,12 +80,12 @@ def add_disclaimer(answer):
 class ImprovedQASystem:
     """AI客服问答系统 - 向量化RAG"""
 
-    # 数据库配置
-    DB_HOST = "REMOVED_DB_HOST"
-    DB_PORT = 3308
-    DB_USER = "REMOVED_DB_USER"
-    DB_PASS = "REMOVED_DB_PASSWORD"
-    DB_NAME = "ai_customer_service"
+    # 数据库配置（从环境变量获取，未设置时使用默认值）
+    DB_HOST = os.environ.get("DB_HOST", "localhost")
+    DB_PORT = int(os.environ.get("DB_PORT", "3308"))
+    DB_USER = os.environ.get("DB_USER", "root")
+    DB_PASS = os.environ.get("DB_PASS", "")
+    DB_NAME = os.environ.get("DB_NAME", "ai_customer_service")
 
     def __init__(self, rebuild=False):
         # 加载知识库
