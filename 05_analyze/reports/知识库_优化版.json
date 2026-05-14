@@ -2228,5 +2228,54 @@
     "priority": 1,
     "source": "supplemented",
     "original_count": 0
+  },
+  {
+    "std_question": "脑梗、脑出血可以报销吗？",
+    "answer": "您好，南京宁惠保不限病种，只要是住院期间产生的合理医疗费用，符合保障责任范围的都可以报销。脑梗、脑出血属于住院医疗费用，在医保定点医院住院治疗产生的费用，扣除医保报销后，超过起付线的部分可按比例报销。",
+    "primary_category": "保障范围",
+    "secondary_category": "疾病报销",
+    "keywords": [
+      "脑梗",
+      "脑出血",
+      "脑卒中",
+      "脑血管",
+      "疾病报销",
+      "病种"
+    ],
+    "source": "supplemented",
+    "priority": 1,
+    "original_count": 0
+  },
+  {
+    "std_question": "如何查询理赔进度？",
+    "answer": "您好，您可以通过以下方式查询理赔进度：\n① 关注【南京宁惠保】微信公众号，点击【我的服务】-【理赔进度查询】\n② 拨打客服热线4000040181人工查询\n③ 理赔审核一般在5-10个工作日完成，复杂案件可能需要更长时间。",
+    "primary_category": "理赔流程",
+    "secondary_category": "理赔查询",
+    "keywords": [
+      "理赔进度",
+      "理赔进展",
+      "查询理赔",
+      "理赔状态",
+      "理赔审核进度"
+    ],
+    "source": "supplemented",
+    "priority": 1,
+    "original_count": 0
+  },
+  {
+    "std_question": "提交理赔后多久能审核完？",
+    "answer": "您好，理赔审核时间如下：\n① 一般案件：5-10个工作日\n② 复杂案件：可能需要15-20个工作日\n③ 审核完成后，理赔款项将在3-5个工作日打入您的账户。\n如需查询进度，可拨打客服热线4000040181。",
+    "primary_category": "理赔流程",
+    "secondary_category": "理赔时效",
+    "keywords": [
+      "理赔审核",
+      "理赔时间",
+      "审核多久",
+      "理赔时效",
+      "理赔进展"
+    ],
+    "source": "supplemented",
+    "priority": 1,
+    "original_count": 0
   }
 ]

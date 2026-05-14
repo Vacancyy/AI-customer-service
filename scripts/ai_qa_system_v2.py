@@ -61,6 +61,48 @@ def filter_pii(text):
     return text
 
 
+def is_personal_query(text):
+    """判断是否为个人数据查询意图（需要转人工）"""
+    # 个人数据查询关键词
+    personal_keywords = [
+        # 查询进度
+        '我的理赔进度', '理赔进展', '理赔到哪', '审核到哪', '我的申请进度',
+        '理赔状态', '理赔审核状态', '我的理赔情况', '理赔怎么还没',
+        # 查询金额
+        '理赔金额', '赔付多少', '能赔多少', '报销多少', '我的理赔款',
+        '赔付金额', '能报销多少', '我能拿到多少',
+        # 个人保单/账户
+        '我的保单', '我的保险', '保单状态', '我的投保', '我的账户',
+        '缴费记录', '我的保费', '续保状态',
+        # 查询结果
+        '我的理赔结果', '理赔通过了吗', '理赔批了吗',
+        # 带有个人信息标识
+        '我的', '本人', '我已提交', '我已经申请',
+    ]
+
+    # 查询类动词
+    query_verbs = ['查询', '查', '看', '了解', '知道', '多少', '进度', '状态', '结果']
+
+    # 判断逻辑：包含"我的/本人" + 查询动词/关键词
+    has_personal = any(kw in text for kw in ['我的', '本人', '我已', '我已经申请'])
+    has_query = any(kw in text for kw in query_verbs)
+
+    # 或直接命中个人数据关键词
+    for kw in personal_keywords:
+        if kw in text:
+            return True
+
+    # "我的" + 查询类问题组合判断
+    if has_personal and has_query:
+        # 排除通用问题（如"我的保费多少钱"应该是通用问题）
+        exclude_keywords = ['保费多少钱', '保费多少', '多少钱', '门槛', '起付线', '保障范围']
+        if any(kw in text for kw in exclude_keywords):
+            return False
+        return True
+
+    return False
+
+
 def scan_output_pii(text):
     """扫描AI输出中的隐私信息并脱敏"""
     text = re.sub(r'\d{17}[\dXx]', '[身份证号已脱敏]', text)
@@ -282,7 +324,7 @@ class ImprovedQASystem:
         return prompt
 
     def get_answer(self, question, history=None):
-        """获取回答：向量检索 + 置信度分层 + 大模型生成（支持多轮对话）"""
+        """获取回答：意图识别 + 向量检索 + 置信度分层 + 大模型生成（支持多轮对话）"""
         import time
         start_time = time.time()
 
@@ -290,7 +332,14 @@ class ImprovedQASystem:
         original_question = question
         question = filter_pii(question)
 
-        # 第一步：向量检索
+        # 第一步：个人数据查询意图识别 → 直接转人工
+        if is_personal_query(original_question):
+            answer = "您好，查询个人理赔进度、金额等信息需要人工客服核实身份后才能提供。\n\n请拨打客服热线4000040181，客服人员会帮您查询。"
+            elapsed = time.time() - start_time
+            self._save_log(original_question, answer, 0.0, [], 'personal_query', elapsed)
+            return answer
+
+        # 第二步：向量检索
         matched = self.search_knowledge(question, top_k=3)
 
         # 低置信度：直接转人工
